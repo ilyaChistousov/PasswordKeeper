@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/passwordListFragment">
+
+    <fragment
+        android:id="@+id/passwordListFragment"
+        android:name="chistousov.ilya.passwordkeeper.presentation.fragments.PasswordListFragment"
+        android:label="PasswordListFragment"
+        tools:layout="@layout/fragment_password_list">
+        <action
+            android:id="@+id/action_passwordListFragment_to_addPasswordFragment"
+            app:destination="@id/addPasswordFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addPasswordFragment"
+        android:name="chistousov.ilya.passwordkeeper.presentation.fragments.AddPasswordFragment"
+        android:label="fragment_add_password"
+        tools:layout="@layout/fragment_add_password" />
+</navigation>
