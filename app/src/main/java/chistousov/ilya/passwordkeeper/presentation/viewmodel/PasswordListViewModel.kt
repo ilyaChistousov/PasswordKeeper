@@ -9,10 +9,10 @@ import javax.inject.Inject
 @HiltViewModel
 class PasswordListViewModel @Inject constructor(
     private val getListPasswordUseCase: GetListPasswordUseCase,
-    private val deletePasswordUseCase: DeletePasswordUseCase
+    private val deletePasswordUseCase: DeletePasswordUseCase,
 ) : ViewModel() {
 
+    val passwordList = getListPasswordUseCase()
 
-    private val _passwordList = getListPasswordUseCase()
 
 }

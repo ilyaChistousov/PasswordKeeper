@@ -2,4 +2,13 @@
     <string name="app_name">PasswordKeeper</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_password">add password</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+    <string name="email">Почта</string>
+    <string name="url">URL</string>
+    <string name="save">Добавить</string>
+    <string name="title">Название</string>
+    <string name="password_error">Пароль не должен быть пустым</string>
+    <string name="required_field">Поле не должно быть пустым</string>
 </resources>
