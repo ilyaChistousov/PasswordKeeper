@@ -50,4 +50,8 @@ class PasswordListViewModel @Inject constructor(
             _passwordList.value = it
         }
     }
+
+    fun deletePassword(id: Int) = viewModelScope.launch {
+        deletePasswordUseCase(id)
+    }
 }

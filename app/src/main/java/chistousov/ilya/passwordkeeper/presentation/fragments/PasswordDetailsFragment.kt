@@ -18,11 +18,11 @@ import chistousov.ilya.passwordkeeper.utils.Validator
 import chistousov.ilya.passwordkeeper.utils.getStringNullable
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlin.math.log
 
 enum class ScreenMode {
     UPDATE, ADD
 }
+
 @AndroidEntryPoint
 class PasswordDetailsFragment : Fragment(R.layout.fragment_password_details) {
 
@@ -36,38 +36,45 @@ class PasswordDetailsFragment : Fragment(R.layout.fragment_password_details) {
 
         getPassword()
         createPassword()
+        deletePassword()
     }
 
 
     private fun getPassword() {
         if (args.screenMode == ScreenMode.UPDATE) {
+            binding.deleteButton.visibility = View.VISIBLE
+
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
                     viewModel.getPassword(args.passwordId)
                     viewModel.selectedPassword.collect {
                         when (it) {
                             is PasswordState.Loading -> {
-                                binding.containerLinear.visibility = View.GONE
-                                binding.errorText.visibility = View.GONE
-                                binding.progressBar.visibility = View.VISIBLE
+                                setupVisibility(binding.progressBar)
                             }
 
                             is PasswordState.Success -> {
-                                binding.containerLinear.visibility = View.VISIBLE
-                                binding.errorText.visibility = View.GONE
-                                binding.progressBar.visibility = View.GONE
+                                setupVisibility(binding.containerLinear)
                                 initFields(it.value)
                             }
 
                             is PasswordState.Error -> {
-                                binding.containerLinear.visibility = View.GONE
-                                binding.progressBar.visibility = View.GONE
-                                binding.errorText.visibility = View.VISIBLE
+                                setupVisibility(binding.errorText)
                                 binding.errorText.text = getString(it.message)
                             }
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private fun setupVisibility(visibleView: View) {
+        listOf(binding.containerLinear, binding.progressBar, binding.errorText).forEach {
+            if (it == visibleView) {
+                it.visibility = View.VISIBLE
+            } else {
+                it.visibility = View.GONE
             }
         }
     }
@@ -80,12 +87,13 @@ class PasswordDetailsFragment : Fragment(R.layout.fragment_password_details) {
             val email = binding.emailEditText.text.toString()
             val url = binding.urlEditText.text.toString()
             when (args.screenMode) {
-                ScreenMode.ADD-> {
+                ScreenMode.ADD -> {
                     validateFields()
                     viewModel.createPassword(title, password, login, email, url) {
                         navigateToPasswordList()
                     }
                 }
+
                 ScreenMode.UPDATE -> {
                     validateFields()
                     viewModel.updatePassword(args.passwordId, title, password, login, email, url) {
@@ -94,6 +102,14 @@ class PasswordDetailsFragment : Fragment(R.layout.fragment_password_details) {
                 }
             }
 
+        }
+    }
+
+    private fun deletePassword() {
+        binding.deleteButton.setOnClickListener {
+            viewModel.deletePassword(args.passwordId) {
+                navigateToPasswordList()
+            }
         }
     }
 

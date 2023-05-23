@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import chistousov.ilya.passwordkeeper.domain.model.PasswordModel
 import chistousov.ilya.passwordkeeper.domain.usecase.CreatePasswordUseCase
+import chistousov.ilya.passwordkeeper.domain.usecase.DeletePasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.GetPasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.UpdatePasswordUseCase
 import chistousov.ilya.passwordkeeper.utils.PasswordState
@@ -19,7 +20,8 @@ import javax.inject.Inject
 class PasswordDetailsViewModel @Inject constructor(
     private val createPasswordUseCase: CreatePasswordUseCase,
     private val getPasswordUseCase: GetPasswordUseCase,
-    private val updatePasswordUseCase: UpdatePasswordUseCase
+    private val updatePasswordUseCase: UpdatePasswordUseCase,
+    private val deletePasswordUseCase: DeletePasswordUseCase
 ) : ViewModel() {
 
     private val _passwordValidation =
@@ -84,6 +86,13 @@ class PasswordDetailsViewModel @Inject constructor(
                 updatePasswordUseCase(updatedPassword)
                 onSuccess()
             }
+        }
+    }
+
+    fun deletePassword(id: Int, onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            deletePasswordUseCase(id)
+            onSuccess()
         }
     }
 
