@@ -11,13 +11,21 @@
         android:label="PasswordListFragment"
         tools:layout="@layout/fragment_password_list">
         <action
-            android:id="@+id/action_passwordListFragment_to_addPasswordFragment"
-            app:destination="@id/addPasswordFragment" />
+            android:id="@+id/action_passwordListFragment_to_passwordDetailsFragment"
+            app:destination="@id/passwordDetailsFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/addPasswordFragment"
-        android:name="chistousov.ilya.passwordkeeper.presentation.fragments.AddPasswordFragment"
+        android:id="@+id/passwordDetailsFragment"
+        android:name="chistousov.ilya.passwordkeeper.presentation.fragments.PasswordDetailsFragment"
         android:label="fragment_add_password"
-        tools:layout="@layout/fragment_add_password" />
+        tools:layout="@layout/fragment_password_details" >
+        <argument
+            android:name="passwordId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="screenMode"
+            app:argType="chistousov.ilya.passwordkeeper.presentation.fragments.ScreenMode" />
+    </fragment>
 </navigation>

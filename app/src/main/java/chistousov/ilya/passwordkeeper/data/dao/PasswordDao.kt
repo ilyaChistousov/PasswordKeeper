@@ -22,4 +22,7 @@ interface PasswordDao {
     @Query("DELETE FROM passwords WHERE id = :passwordId")
     suspend fun deletePassword(passwordId: Int)
 
+    @Query("SELECT * FROM passwords WHERE title LIKE '%' || :query || '%'")
+    fun searchPassword(query: String) : Flow<List<PasswordDbEntity>>
+
 }
