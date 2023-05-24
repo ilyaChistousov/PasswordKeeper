@@ -5,16 +5,14 @@ import chistousov.ilya.passwordkeeper.data.dao.PasswordDao
 import chistousov.ilya.passwordkeeper.data.mapper.PasswordMapper
 import chistousov.ilya.passwordkeeper.domain.model.PasswordModel
 import chistousov.ilya.passwordkeeper.domain.repository.PasswordRepository
-import chistousov.ilya.passwordkeeper.utils.PasswordState
+import chistousov.ilya.passwordkeeper.utils.UiState
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -25,14 +23,14 @@ class PasswordRepositoryImpl @Inject constructor(
 
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 
-    override suspend fun getPassword(passwordId: Int): Flow<PasswordState<PasswordModel>> = flow {
+    override suspend fun getPassword(passwordId: Int): Flow<UiState<PasswordModel>> = flow {
         delay(1000)
         try {
             val password = passwordDao.getPassword(passwordId)
             val mappedPassword = passwordMapper.mapFromDbEntityToModel(password)
-            emit(PasswordState.Success(mappedPassword))
+            emit(UiState.Success(mappedPassword))
         } catch (e: Exception) {
-            emit(PasswordState.Error(R.string.error_password_not_found))
+            emit(UiState.Error(R.string.error_password_not_found))
         }
     }.flowOn(ioDispatcher)
 

@@ -5,9 +5,10 @@ import androidx.lifecycle.viewModelScope
 import chistousov.ilya.passwordkeeper.domain.model.PasswordModel
 import chistousov.ilya.passwordkeeper.domain.usecase.CreatePasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.DeletePasswordUseCase
+import chistousov.ilya.passwordkeeper.domain.usecase.GenerateUniquePasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.GetPasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.UpdatePasswordUseCase
-import chistousov.ilya.passwordkeeper.utils.PasswordState
+import chistousov.ilya.passwordkeeper.utils.UiState
 import chistousov.ilya.passwordkeeper.utils.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +22,8 @@ class PasswordDetailsViewModel @Inject constructor(
     private val createPasswordUseCase: CreatePasswordUseCase,
     private val getPasswordUseCase: GetPasswordUseCase,
     private val updatePasswordUseCase: UpdatePasswordUseCase,
-    private val deletePasswordUseCase: DeletePasswordUseCase
+    private val deletePasswordUseCase: DeletePasswordUseCase,
+    private val generateUniquePasswordUseCase: GenerateUniquePasswordUseCase
 ) : ViewModel() {
 
     private val _passwordValidation =
@@ -29,8 +31,11 @@ class PasswordDetailsViewModel @Inject constructor(
     val passwordValidation: StateFlow<Map<String, Int?>> =
         _passwordValidation.asStateFlow()
 
-    private val _selectedPassword = MutableStateFlow<PasswordState<PasswordModel>>(PasswordState.Loading())
-    val selectedPassword : StateFlow<PasswordState<PasswordModel>> = _selectedPassword
+    private val _selectedPassword = MutableStateFlow<UiState<PasswordModel>>(UiState.Loading())
+    val selectedPassword: StateFlow<UiState<PasswordModel>> = _selectedPassword
+
+    private val _generatedPassword = MutableStateFlow("")
+    val generatedPassword: StateFlow<String> = _generatedPassword
 
     private val validator = Validator()
 
@@ -39,6 +44,7 @@ class PasswordDetailsViewModel @Inject constructor(
             _selectedPassword.value = it
         }
     }
+
     fun createPassword(
         title: String,
         password: String,
@@ -96,6 +102,15 @@ class PasswordDetailsViewModel @Inject constructor(
         }
     }
 
+    fun generatePassword(
+        length: Int,
+        withDigits: Boolean,
+        withUppercase: Boolean,
+        withSpecial: Boolean
+    ) {
+        _generatedPassword.value =
+            generateUniquePasswordUseCase(length, withDigits, withUppercase, withSpecial)
+    }
 
     private fun validatePasswordAndTitle(password: String, title: String) {
         val validatedPassword = validator.validate(password)

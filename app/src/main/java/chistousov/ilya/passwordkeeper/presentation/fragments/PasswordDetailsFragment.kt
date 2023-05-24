@@ -2,6 +2,7 @@ package chistousov.ilya.passwordkeeper.presentation.fragments
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -13,9 +14,10 @@ import chistousov.ilya.passwordkeeper.R
 import chistousov.ilya.passwordkeeper.databinding.FragmentPasswordDetailsBinding
 import chistousov.ilya.passwordkeeper.domain.model.PasswordModel
 import chistousov.ilya.passwordkeeper.presentation.viewmodel.PasswordDetailsViewModel
-import chistousov.ilya.passwordkeeper.utils.PasswordState
+import chistousov.ilya.passwordkeeper.utils.UiState
 import chistousov.ilya.passwordkeeper.utils.Validator
 import chistousov.ilya.passwordkeeper.utils.getStringNullable
+import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -29,6 +31,9 @@ class PasswordDetailsFragment : Fragment(R.layout.fragment_password_details) {
     private val viewModel: PasswordDetailsViewModel by viewModels()
     private lateinit var binding: FragmentPasswordDetailsBinding
     private val args: PasswordDetailsFragmentArgs by navArgs()
+    private val generatePasswordButtons by lazy {
+        binding.passwordGeneratorSettings.buttonsGroup.children as Sequence<MaterialButton>
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -37,8 +42,8 @@ class PasswordDetailsFragment : Fragment(R.layout.fragment_password_details) {
         getPassword()
         createPassword()
         deletePassword()
+        initGeneratorPasswordListeners()
     }
-
 
     private fun getPassword() {
         if (args.screenMode == ScreenMode.UPDATE) {
@@ -49,16 +54,16 @@ class PasswordDetailsFragment : Fragment(R.layout.fragment_password_details) {
                     viewModel.getPassword(args.passwordId)
                     viewModel.selectedPassword.collect {
                         when (it) {
-                            is PasswordState.Loading -> {
+                            is UiState.Loading -> {
                                 setupVisibility(binding.progressBar)
                             }
 
-                            is PasswordState.Success -> {
+                            is UiState.Success -> {
                                 setupVisibility(binding.containerLinear)
-                                initFields(it.value)
+                                initFormFields(it.value)
                             }
 
-                            is PasswordState.Error -> {
+                            is UiState.Error -> {
                                 setupVisibility(binding.errorText)
                                 binding.errorText.text = getString(it.message)
                             }
@@ -101,7 +106,6 @@ class PasswordDetailsFragment : Fragment(R.layout.fragment_password_details) {
                     }
                 }
             }
-
         }
     }
 
@@ -113,13 +117,16 @@ class PasswordDetailsFragment : Fragment(R.layout.fragment_password_details) {
         }
     }
 
-    private fun initFields(password: PasswordModel) {
-        with(binding) {
-            titleEditText.setText(password.title)
-            passwordEditText.setText(password.password)
-            loginEditText.setText(password.login)
-            emailEditText.setText(password.email)
-            urlEditText.setText(password.url)
+    private fun generatePasswordByButtonClick() {
+        with(binding.passwordGeneratorSettings) {
+            val passwordLength = slider.value.toInt()
+            val withDigitChar = digitCharButton.isChecked
+            val withUppercaseChar = uppercaseCharButton.isChecked
+            val withSpecialChar = specialCharButton.isChecked
+            viewModel.generatePassword(
+                passwordLength, withDigitChar,
+                withUppercaseChar, withSpecialChar
+            )
         }
     }
 
@@ -135,6 +142,43 @@ class PasswordDetailsFragment : Fragment(R.layout.fragment_password_details) {
                 }
             }
         }
+    }
+
+    private fun initGeneratorPasswordListeners() {
+        binding.generatePasswordButton.setOnClickListener {
+            binding.passwordGeneratorSettings.root.visibility = View.VISIBLE
+            generatePasswordByButtonClick()
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.generatedPassword.collect {
+                        binding.passwordEditText.setText(it)
+                    }
+                }
+            }
+        }
+
+        generatePasswordButtons.forEach {
+            it.isChecked = true
+            it.setOnClickListener {
+                generatePasswordByButtonClick()
+            }
+        }
+
+        with(binding.passwordGeneratorSettings) {
+            countCharText.text = slider.value.toString()
+            slider.addOnChangeListener { _, value, _ ->
+                countCharText.text = value.toInt().toString()
+                generatePasswordByButtonClick()
+            }
+        }
+    }
+
+    private fun initFormFields(password: PasswordModel) {
+        binding.titleEditText.setText(password.title)
+        binding.passwordEditText.setText(password.password)
+        binding.loginEditText.setText(password.login)
+        binding.emailEditText.setText(password.email)
+        binding.urlEditText.setText(password.url)
     }
 
     private fun initValidationFields() = mapOf(

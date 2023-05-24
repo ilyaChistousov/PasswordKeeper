@@ -14,4 +14,8 @@
     <string name="search">Поиск</string>
     <string name="error_password_not_found">Пользователь не найден</string>
     <string name="delete">Удалить</string>
+    <string name="capital_char">A-Z</string>
+    <string name="digital_char">0-9</string>
+    <string name="special_char">!@*</string>
+    <string name="count_char">Количество символов</string>
 </resources>

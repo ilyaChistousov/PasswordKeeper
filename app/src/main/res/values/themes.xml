@@ -5,5 +5,12 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
+    <style name="CustomTextInputEditTextPadding" parent="Widget.MaterialComponents.TextInputEditText.FilledBox">
+        <item name="android:paddingBottom">5dp</item>
+    </style>
     <style name="Theme.PasswordKeeper" parent="Base.Theme.PasswordKeeper" />
+    <style name="CustomMaterialButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:padding">0dp</item>
+        <item name="android:textSize">@dimen/button_text</item>
+    </style>
 </resources>
