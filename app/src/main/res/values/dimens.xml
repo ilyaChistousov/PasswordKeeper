@@ -2,4 +2,7 @@
 <resources>
     <dimen name="password_image">64dp</dimen>
     <dimen name="password_copy">24dp</dimen>
+    <dimen name="button_text">12sp</dimen>
+    <dimen name="wh_buttons">50dp</dimen>
+    <dimen name="text_count_margin">10dp</dimen>
 </resources>
