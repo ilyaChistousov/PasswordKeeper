@@ -6,6 +6,7 @@ import chistousov.ilya.passwordkeeper.domain.model.PasswordModel
 import chistousov.ilya.passwordkeeper.domain.usecase.DeletePasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.GetListPasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.SearchPasswordUseCase
+import chistousov.ilya.passwordkeeper.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,8 +20,8 @@ class PasswordListViewModel @Inject constructor(
     private val searchPasswordUseCase: SearchPasswordUseCase,
 ) : ViewModel() {
 
-    private val _passwordList = MutableStateFlow<List<PasswordModel>>(emptyList())
-    val passwordList : StateFlow<List<PasswordModel>> = _passwordList
+    private val _passwordList = MutableStateFlow<UiState<List<PasswordModel>>>(UiState.Loading())
+    val passwordList : StateFlow<UiState<List<PasswordModel>>> = _passwordList
 
 
     init {
@@ -32,7 +33,8 @@ class PasswordListViewModel @Inject constructor(
     fun searchPassword(query: String) = viewModelScope.launch {
         if (query.isNotEmpty()) {
             searchPasswordUseCase(query).collect {
-                _passwordList.value = it
+                // баг при компиляции, поэтому приходится вручную кастить
+                _passwordList.value = it as UiState<List<PasswordModel>>
             }
         } else {
             getAllValues()
@@ -41,7 +43,8 @@ class PasswordListViewModel @Inject constructor(
 
     private suspend fun getAllValues() {
         getListPasswordUseCase().collect {
-            _passwordList.value = it
+            // баг при компиляции, поэтому приходится вручную кастить
+            _passwordList.value = it as UiState<List<PasswordModel>>
         }
     }
 

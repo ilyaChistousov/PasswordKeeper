@@ -2,6 +2,7 @@ package chistousov.ilya.passwordkeeper.presentation.fragments
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -43,6 +44,7 @@ class PasswordDetailsFragment : Fragment(R.layout.fragment_password_details) {
         createPassword()
         deletePassword()
         initGeneratorPasswordListeners()
+        obBackPressedListener()
     }
 
     private fun getPassword() {
@@ -158,6 +160,7 @@ class PasswordDetailsFragment : Fragment(R.layout.fragment_password_details) {
         }
 
         generatePasswordButtons.forEach {
+            it.setStrokeColorResource(android.R.color.transparent)
             it.isChecked = true
             it.setOnClickListener {
                 generatePasswordByButtonClick()
@@ -165,7 +168,7 @@ class PasswordDetailsFragment : Fragment(R.layout.fragment_password_details) {
         }
 
         with(binding.passwordGeneratorSettings) {
-            countCharText.text = slider.value.toString()
+            countCharText.text = slider.value.toInt().toString()
             slider.addOnChangeListener { _, value, _ ->
                 countCharText.text = value.toInt().toString()
                 generatePasswordByButtonClick()
@@ -186,7 +189,18 @@ class PasswordDetailsFragment : Fragment(R.layout.fragment_password_details) {
         Validator.PASSWORD_KEY to binding.passwordContainer
     )
 
+    private fun obBackPressedListener() {
+        requireActivity()
+            .onBackPressedDispatcher
+            .addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                navigateToPasswordList()
+            }
+        })
+    }
+
     private fun navigateToPasswordList() {
         findNavController().popBackStack()
     }
+
 }

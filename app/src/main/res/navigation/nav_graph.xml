@@ -3,29 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/passwordListFragment">
-
+    app:startDestination="@id/tabsFragment">
     <fragment
-        android:id="@+id/passwordListFragment"
-        android:name="chistousov.ilya.passwordkeeper.presentation.fragments.PasswordListFragment"
-        android:label="PasswordListFragment"
-        tools:layout="@layout/fragment_password_list">
-        <action
-            android:id="@+id/action_passwordListFragment_to_passwordDetailsFragment"
-            app:destination="@id/passwordDetailsFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/passwordDetailsFragment"
-        android:name="chistousov.ilya.passwordkeeper.presentation.fragments.PasswordDetailsFragment"
-        android:label="fragment_add_password"
-        tools:layout="@layout/fragment_password_details" >
-        <argument
-            android:name="passwordId"
-            app:argType="integer"
-            android:defaultValue="-1" />
-        <argument
-            android:name="screenMode"
-            app:argType="chistousov.ilya.passwordkeeper.presentation.fragments.ScreenMode" />
-    </fragment>
+        android:id="@+id/tabsFragment"
+        android:name="chistousov.ilya.passwordkeeper.presentation.fragments.TabsFragment"
+        android:label="fragment_tabs"
+        tools:layout="@layout/fragment_tabs" />
 </navigation>

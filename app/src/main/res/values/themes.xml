@@ -12,5 +12,19 @@
     <style name="CustomMaterialButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:padding">0dp</item>
         <item name="android:textSize">@dimen/button_text</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <style name="ShapeAppearanceOverlay.Custom.Rounded" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/corner_radius</item>
+        <item name="android:textColor">@color/red</item>
+    </style>
+    <style name="TextInputLayout.FilledBox.Custom" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="boxBackgroundMode">filled</item>
+        <item name="boxBackgroundColor">@color/field_background</item>
+        <item name="android:textColorHint">@color/grey</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.Custom.Rounded</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
     </style>
 </resources>
