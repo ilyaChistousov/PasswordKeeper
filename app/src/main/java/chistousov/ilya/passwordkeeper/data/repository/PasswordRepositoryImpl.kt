@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -34,11 +35,17 @@ class PasswordRepositoryImpl @Inject constructor(
         }
     }.flowOn(ioDispatcher)
 
-    override fun getListPassword(): Flow<List<PasswordModel>>  {
-        return passwordDao.getPasswordList().map {
-            passwordMapper.mapFromDbEntityListToModelList(it)
-        }.flowOn(ioDispatcher)
-    }
+    override fun getListPassword(): Flow<UiState<List<PasswordModel>>> = flow {
+        emit(UiState.Loading())
+        delay(1000)
+        try {
+            val passwordList = passwordDao.getPasswordList()
+            val mappedList = passwordMapper.mapFromDbEntityListToModelList(passwordList)
+            emit(UiState.Success(mappedList))
+        } catch (e: Exception) {
+            emit(UiState.Error(R.string.error_loading_failed))
+        }
+    }.flowOn(ioDispatcher)
 
     override suspend fun createPassword(passwordModel: PasswordModel) = withContext(ioDispatcher){
         passwordDao.insertPassword(passwordMapper.mapFromModelToDbEntity(passwordModel))
@@ -52,9 +59,15 @@ class PasswordRepositoryImpl @Inject constructor(
         passwordDao.deletePassword(passwordId)
     }
 
-    override suspend fun searchPassword(query: String): Flow<List<PasswordModel>> {
-        return passwordDao.searchPassword(query).map {
-            passwordMapper.mapFromDbEntityListToModelList(it)
-        }.flowOn(ioDispatcher)
-    }
+    override suspend fun searchPassword(query: String): Flow<UiState<List<PasswordModel>>> = flow {
+        emit(UiState.Loading())
+        delay(1000)
+        try {
+            val passwordList = passwordDao.searchPassword(query)
+            val mappedList = passwordMapper.mapFromDbEntityListToModelList(passwordList)
+            emit(UiState.Success(mappedList))
+        } catch (e: Exception) {
+            emit(UiState.Error(R.string.error_loading_failed))
+        }
+    }.flowOn(ioDispatcher)
 }

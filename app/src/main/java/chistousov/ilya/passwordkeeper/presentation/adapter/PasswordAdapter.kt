@@ -1,8 +1,11 @@
 package chistousov.ilya.passwordkeeper.presentation.adapter
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import chistousov.ilya.passwordkeeper.databinding.PasswordItemBinding
@@ -40,6 +43,12 @@ class PasswordAdapter(private val itemClickListener: (Int) -> Unit) : ListAdapte
         fun create(item: PasswordModel) {
             binding.passwordLogin.text = item.login
             binding.passwordTitle.text = item.title
+            binding.passwordCopy.setOnClickListener {
+                val clipboardManager = binding.root.context.getSystemService(ClipboardManager::class.java)
+                val clipData = ClipData.newPlainText("label", item.password)
+                clipboardManager.setPrimaryClip(clipData)
+                Toast.makeText(binding.root.context, "Password copied", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 interface PasswordDao {
 
     @Query("SELECT * FROM passwords")
-    fun getPasswordList() : Flow<List<PasswordDbEntity>>
+    suspend fun getPasswordList() : List<PasswordDbEntity>
 
     @Query("SELECT * FROM passwords WHERE id = :passwordId LIMIT 1")
     suspend fun getPassword(passwordId: Int) : PasswordDbEntity
@@ -23,6 +23,6 @@ interface PasswordDao {
     suspend fun deletePassword(passwordId: Int)
 
     @Query("SELECT * FROM passwords WHERE title LIKE '%' || :query || '%'")
-    fun searchPassword(query: String) : Flow<List<PasswordDbEntity>>
+    suspend fun searchPassword(query: String) : List<PasswordDbEntity>
 
 }

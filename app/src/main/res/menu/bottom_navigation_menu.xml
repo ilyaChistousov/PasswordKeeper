@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@id/passwordList"
+        android:icon="@drawable/key_24"
+        android:title="@string/passwords"/>
+    <item
+        android:id="@id/addPassword"
+        android:icon="@drawable/lock_24"
+        android:title="@string/add_password"/>
+</menu>
