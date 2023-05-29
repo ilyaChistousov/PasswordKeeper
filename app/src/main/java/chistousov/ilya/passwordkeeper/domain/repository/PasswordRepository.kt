@@ -8,7 +8,7 @@ interface PasswordRepository {
 
     suspend fun getPassword(passwordId: Int) : PasswordModel
 
-    suspend fun getListPassword() : List<PasswordModel>
+    fun getListPassword() : Flow<List<PasswordModel>>
 
     suspend fun createPassword(passwordModel: PasswordModel)
 
@@ -16,5 +16,5 @@ interface PasswordRepository {
 
     suspend fun deletePassword(passwordId: Int)
 
-    suspend fun searchPassword(query: String) : List<PasswordModel>
+    fun searchPassword(query: String) : Flow<List<PasswordModel>>
 }

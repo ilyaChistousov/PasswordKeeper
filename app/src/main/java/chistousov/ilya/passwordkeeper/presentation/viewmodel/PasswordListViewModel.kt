@@ -3,6 +3,7 @@ package chistousov.ilya.passwordkeeper.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import chistousov.ilya.passwordkeeper.domain.model.PasswordModel
+import chistousov.ilya.passwordkeeper.domain.usecase.CreatePasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.DeletePasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.GetListPasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.SearchPasswordUseCase

@@ -4,8 +4,6 @@ import chistousov.ilya.passwordkeeper.R
 import chistousov.ilya.passwordkeeper.domain.Result
 import chistousov.ilya.passwordkeeper.domain.model.PasswordModel
 import chistousov.ilya.passwordkeeper.domain.repository.PasswordRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class GetPasswordUseCase @Inject constructor(private val repository: PasswordRepository) {
