@@ -2,6 +2,7 @@ package chistousov.ilya.passwordkeeper.presentation.fragments
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -14,8 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import chistousov.ilya.passwordkeeper.R
 import chistousov.ilya.passwordkeeper.databinding.FragmentPasswordListBinding
 import chistousov.ilya.passwordkeeper.presentation.adapter.PasswordAdapter
+import chistousov.ilya.passwordkeeper.presentation.utils.UiState
 import chistousov.ilya.passwordkeeper.presentation.viewmodel.PasswordListViewModel
-import chistousov.ilya.passwordkeeper.utils.UiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -64,7 +65,7 @@ class PasswordListFragment : Fragment(R.layout.fragment_password_list) {
                         }
                         is UiState.Error -> {
                             setupVisibility(binding.errorMessage)
-                            binding.errorMessage.setText(it.message)
+                            binding.errorMessage.setText(it.resId)
                         }
                     }
                 }
@@ -74,11 +75,7 @@ class PasswordListFragment : Fragment(R.layout.fragment_password_list) {
 
     private fun setupVisibility(visibleView: View) {
         listOf(binding.passwordsRecycler, binding.loadingBar, binding.errorMessage).forEach {
-            if (it == visibleView) {
-                it.visibility = View.VISIBLE
-            } else {
-                it.visibility = View.GONE
-            }
+            it.isVisible = it == visibleView
         }
     }
 
@@ -96,8 +93,8 @@ class PasswordListFragment : Fragment(R.layout.fragment_password_list) {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val item = adapter.currentList[viewHolder.adapterPosition]
-                viewModel.deletePassword(item.id)
+                val swipedItem = adapter.currentList[viewHolder.adapterPosition]
+                viewModel.deletePassword(swipedItem.id)
             }
         }).attachToRecyclerView(binding.passwordsRecycler)
     }

@@ -8,8 +8,9 @@ import chistousov.ilya.passwordkeeper.domain.usecase.DeletePasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.GenerateUniquePasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.GetPasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.UpdatePasswordUseCase
-import chistousov.ilya.passwordkeeper.utils.UiState
-import chistousov.ilya.passwordkeeper.utils.Validator
+import chistousov.ilya.passwordkeeper.presentation.utils.UiState
+import chistousov.ilya.passwordkeeper.presentation.utils.Validator
+import chistousov.ilya.passwordkeeper.presentation.utils.mapToUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -40,9 +41,7 @@ class PasswordDetailsViewModel @Inject constructor(
     private val validator = Validator()
 
     fun getPassword(id: Int) = viewModelScope.launch {
-        getPasswordUseCase(id).collect {
-            _selectedPassword.value = it
-        }
+        _selectedPassword.value = getPasswordUseCase(id).mapToUiState()
     }
 
     fun createPassword(

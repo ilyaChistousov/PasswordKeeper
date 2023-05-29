@@ -1,14 +1,14 @@
 package chistousov.ilya.passwordkeeper.domain.repository
 
 import chistousov.ilya.passwordkeeper.domain.model.PasswordModel
-import chistousov.ilya.passwordkeeper.utils.UiState
+import chistousov.ilya.passwordkeeper.presentation.utils.UiState
 import kotlinx.coroutines.flow.Flow
 
 interface PasswordRepository {
 
-    suspend fun getPassword(passwordId: Int) : Flow<UiState<PasswordModel>>
+    suspend fun getPassword(passwordId: Int) : PasswordModel
 
-    fun getListPassword() : Flow<UiState<List<PasswordModel>>>
+    suspend fun getListPassword() : List<PasswordModel>
 
     suspend fun createPassword(passwordModel: PasswordModel)
 
@@ -16,6 +16,5 @@ interface PasswordRepository {
 
     suspend fun deletePassword(passwordId: Int)
 
-    suspend fun searchPassword(query: String) : Flow<UiState<List<PasswordModel>>>
-
+    suspend fun searchPassword(query: String) : List<PasswordModel>
 }

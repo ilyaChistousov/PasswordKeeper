@@ -3,7 +3,6 @@ package chistousov.ilya.passwordkeeper.domain.model
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-@Parcelize
 data class PasswordModel (
     val id: Int = 0,
     val title: String,
@@ -11,4 +10,4 @@ data class PasswordModel (
     val login: String,
     val email: String,
     val url: String,
-) : Parcelable
+)

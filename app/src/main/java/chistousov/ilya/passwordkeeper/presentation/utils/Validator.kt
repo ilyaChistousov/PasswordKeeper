@@ -1,4 +1,4 @@
-package chistousov.ilya.passwordkeeper.utils
+package chistousov.ilya.passwordkeeper.presentation.utils
 
 import chistousov.ilya.passwordkeeper.R
 
@@ -20,10 +20,10 @@ class Validator {
         rules.add(rule)
     }
 
-    class Rule(private val rule: Regex, private val message: Int) {
+    class Rule(private val rule: Regex, private val resId: Int) {
 
         fun isValid(value: String): Pair<Boolean, Int> {
-            return rule.matches(value) to message
+            return rule.matches(value) to resId
         }
     }
 

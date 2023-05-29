@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.children
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -14,10 +15,10 @@ import androidx.navigation.fragment.navArgs
 import chistousov.ilya.passwordkeeper.R
 import chistousov.ilya.passwordkeeper.databinding.FragmentPasswordDetailsBinding
 import chistousov.ilya.passwordkeeper.domain.model.PasswordModel
+import chistousov.ilya.passwordkeeper.presentation.utils.UiState
+import chistousov.ilya.passwordkeeper.presentation.utils.Validator
+import chistousov.ilya.passwordkeeper.presentation.utils.getStringNullable
 import chistousov.ilya.passwordkeeper.presentation.viewmodel.PasswordDetailsViewModel
-import chistousov.ilya.passwordkeeper.utils.UiState
-import chistousov.ilya.passwordkeeper.utils.Validator
-import chistousov.ilya.passwordkeeper.utils.getStringNullable
 import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -67,7 +68,7 @@ class PasswordDetailsFragment : Fragment(R.layout.fragment_password_details) {
 
                             is UiState.Error -> {
                                 setupVisibility(binding.errorText)
-                                binding.errorText.text = getString(it.message)
+                                binding.errorText.text = getString(it.resId)
                             }
                         }
                     }
@@ -78,11 +79,7 @@ class PasswordDetailsFragment : Fragment(R.layout.fragment_password_details) {
 
     private fun setupVisibility(visibleView: View) {
         listOf(binding.containerLinear, binding.progressBar, binding.errorText).forEach {
-            if (it == visibleView) {
-                it.visibility = View.VISIBLE
-            } else {
-                it.visibility = View.GONE
-            }
+            it.isVisible = it == visibleView
         }
     }
 
@@ -119,7 +116,7 @@ class PasswordDetailsFragment : Fragment(R.layout.fragment_password_details) {
         }
     }
 
-    private fun generatePasswordByButtonClick() {
+    private fun generatePassword() {
         with(binding.passwordGeneratorSettings) {
             val passwordLength = slider.value.toInt()
             val withDigitChar = digitCharButton.isChecked
@@ -149,7 +146,7 @@ class PasswordDetailsFragment : Fragment(R.layout.fragment_password_details) {
     private fun initGeneratorPasswordListeners() {
         binding.generatePasswordButton.setOnClickListener {
             binding.passwordGeneratorSettings.root.visibility = View.VISIBLE
-            generatePasswordByButtonClick()
+            generatePassword()
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
                     viewModel.generatedPassword.collect {
@@ -163,7 +160,7 @@ class PasswordDetailsFragment : Fragment(R.layout.fragment_password_details) {
             it.setStrokeColorResource(android.R.color.transparent)
             it.isChecked = true
             it.setOnClickListener {
-                generatePasswordByButtonClick()
+                generatePassword()
             }
         }
 
@@ -171,7 +168,7 @@ class PasswordDetailsFragment : Fragment(R.layout.fragment_password_details) {
             countCharText.text = slider.value.toInt().toString()
             slider.addOnChangeListener { _, value, _ ->
                 countCharText.text = value.toInt().toString()
-                generatePasswordByButtonClick()
+                generatePassword()
             }
         }
     }

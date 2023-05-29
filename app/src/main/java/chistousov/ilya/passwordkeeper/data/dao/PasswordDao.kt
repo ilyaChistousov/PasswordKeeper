@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PasswordDao {
-
     @Query("SELECT * FROM passwords")
     suspend fun getPasswordList() : List<PasswordDbEntity>
 
