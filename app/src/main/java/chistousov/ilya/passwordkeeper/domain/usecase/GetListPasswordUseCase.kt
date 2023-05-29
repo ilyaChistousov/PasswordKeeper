@@ -5,7 +5,6 @@ import chistousov.ilya.passwordkeeper.domain.Result
 import chistousov.ilya.passwordkeeper.domain.model.PasswordModel
 import chistousov.ilya.passwordkeeper.domain.repository.PasswordRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
@@ -13,7 +12,9 @@ class GetListPasswordUseCase @Inject constructor (private val repository: Passwo
 
     suspend operator fun invoke(): Flow<Result<List<PasswordModel>>> = flow{
         try {
-            emit(Result.Success(repository.getListPassword()))
+            repository.getListPassword().collect {
+                emit(Result.Success(it))
+            }
         } catch (e: Exception) {
             emit(Result.Error(R.string.error_loading_failed))
         }

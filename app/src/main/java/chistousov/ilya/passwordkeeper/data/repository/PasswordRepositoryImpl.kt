@@ -23,8 +23,10 @@ class PasswordRepositoryImpl @Inject constructor(
         return@withContext passwordMapper.mapFromDbEntityToModel(passwordDao.getPassword(passwordId))
     }
 
-    override suspend fun getListPassword(): List<PasswordModel> = withContext(ioDispatcher) {
-        return@withContext passwordMapper.mapFromDbEntityListToModelList(passwordDao.getPasswordList())
+    override fun getListPassword(): Flow<List<PasswordModel>> {
+        return passwordDao.getPasswordList()
+            .map { passwordMapper.mapFromDbEntityListToModelList(it) }
+            .flowOn(ioDispatcher)
     }
 
     override suspend fun createPassword(passwordModel: PasswordModel) = withContext(ioDispatcher) {
@@ -39,7 +41,9 @@ class PasswordRepositoryImpl @Inject constructor(
         passwordDao.deletePassword(passwordId)
     }
 
-    override suspend fun searchPassword(query: String): List<PasswordModel> = withContext(ioDispatcher) {
-        return@withContext passwordMapper.mapFromDbEntityListToModelList(passwordDao.searchPassword(query))
+    override fun searchPassword(query: String): Flow<List<PasswordModel>> {
+        return passwordDao.searchPassword(query)
+            .map { passwordMapper.mapFromDbEntityListToModelList(it) }
+            .flowOn(ioDispatcher)
     }
 }
