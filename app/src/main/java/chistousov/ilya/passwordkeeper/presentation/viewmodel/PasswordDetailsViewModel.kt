@@ -38,8 +38,6 @@ class PasswordDetailsViewModel @Inject constructor(
     private val _generatedPassword = MutableStateFlow("")
     val generatedPassword: StateFlow<String> = _generatedPassword
 
-    private val validator = Validator()
-
     fun getPassword(id: Int) = viewModelScope.launch {
         _selectedPassword.value = getPasswordUseCase(id).mapToUiState()
     }
@@ -112,8 +110,11 @@ class PasswordDetailsViewModel @Inject constructor(
     }
 
     private fun validatePasswordAndTitle(password: String, title: String) {
+        val validator = Validator()
+
         val validatedPassword = validator.validate(password)
         val validatedTitle = validator.validate(title)
+
         val map = mutableMapOf<String, Int?>()
         map[Validator.PASSWORD_KEY] = validatedPassword
         map[Validator.TITLE_KEY] = validatedTitle

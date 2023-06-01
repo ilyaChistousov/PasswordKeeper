@@ -3,16 +3,15 @@ package chistousov.ilya.passwordkeeper.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import chistousov.ilya.passwordkeeper.domain.model.PasswordModel
-import chistousov.ilya.passwordkeeper.domain.usecase.CreatePasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.DeletePasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.GetListPasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.SearchPasswordUseCase
 import chistousov.ilya.passwordkeeper.presentation.utils.UiState
 import chistousov.ilya.passwordkeeper.presentation.utils.mapToUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,8 +24,6 @@ class PasswordListViewModel @Inject constructor(
 
     private val _passwordList = MutableStateFlow<UiState<List<PasswordModel>>>(UiState.Loading())
     val passwordList : StateFlow<UiState<List<PasswordModel>>> = _passwordList
-
-
     init {
         viewModelScope.launch {
             getAllValues()

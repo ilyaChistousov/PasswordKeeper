@@ -16,7 +16,7 @@ class SearchPasswordUseCase @Inject constructor(private val repository: Password
                 emit(Result.Success(it))
             }
         } catch (e: Exception) {
-            emit(Result.Error(R.string.password_error))
+            emit(Result.Error("Ошибка загрузки данных"))
         }
     }
 }

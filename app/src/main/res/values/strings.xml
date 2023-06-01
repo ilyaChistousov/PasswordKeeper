@@ -21,4 +21,7 @@
     <string name="count_char">Количество символов</string>
     <string name="passwords">Пароли</string>
     <string name="password_copied">Пароль скопирован</string>
+    <string name="min_char_field">Пароль должен содержать более 5 символов</string>
+    <string name="max_char_field">Пароль не должен быть больше 16 символов</string>
+    <string name="not_same_field">Пароль не совпадает</string>
 </resources>
