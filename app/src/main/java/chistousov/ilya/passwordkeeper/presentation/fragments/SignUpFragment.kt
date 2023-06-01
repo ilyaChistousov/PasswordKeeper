@@ -45,7 +45,7 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
     }
 
     private fun signUp() {
-        binding.saveButton.setOnClickListener {
+        binding.signUpButton.setOnClickListener {
             val password = binding.passwordCreatingText.text.toString()
             val confirmPassword = binding.passwordConfirmText.text.toString()
             viewModel.signUp(password, confirmPassword) { navigateToSignInFragment() }

@@ -2,7 +2,7 @@ package chistousov.ilya.passwordkeeper.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import chistousov.ilya.passwordkeeper.domain.usecase.CheckRegistrationUseCase
+import chistousov.ilya.passwordkeeper.domain.usecase.IsSignedUpUseCase
 import chistousov.ilya.passwordkeeper.presentation.utils.UiState
 import chistousov.ilya.passwordkeeper.presentation.utils.mapToUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val checkRegistrationUseCase: CheckRegistrationUseCase
+    private val isSignedUpUseCase: IsSignedUpUseCase
 ) : ViewModel() {
 
     private val _isRegistered = MutableStateFlow<UiState<Boolean>>(UiState.Loading())
@@ -22,7 +22,7 @@ class MainActivityViewModel @Inject constructor(
 
     fun checkRegistration() {
         viewModelScope.launch {
-            _isRegistered.value = checkRegistrationUseCase().mapToUiState()
+            _isRegistered.value = isSignedUpUseCase().mapToUiState()
         }
     }
 }

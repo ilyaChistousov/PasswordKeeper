@@ -29,7 +29,7 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
     }
 
     private fun signIn() {
-        binding.saveButton.setOnClickListener {
+        binding.signInButton.setOnClickListener {
             viewModel.signIn(binding.passwordText.text.toString()) {
                 navigateToTabsFragment()
             }

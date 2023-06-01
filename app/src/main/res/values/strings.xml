@@ -24,4 +24,7 @@
     <string name="min_char_field">Пароль должен содержать более 5 символов</string>
     <string name="max_char_field">Пароль не должен быть больше 16 символов</string>
     <string name="not_same_field">Пароль не совпадает</string>
+    <string name="repeat_password">Повторите пароль</string>
+    <string name="sign_up">Регистарция</string>
+    <string name="sign_in">Войти</string>
 </resources>
