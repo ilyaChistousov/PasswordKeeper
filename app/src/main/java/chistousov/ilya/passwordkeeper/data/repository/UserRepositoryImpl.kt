@@ -13,21 +13,21 @@ class UserRepositoryImpl @Inject constructor(
     private val userDao: UserDao,
     private val ioDispatcher: CoroutineDispatcher,
     private val mapper: UserMapper
-): UserRepository {
+) : UserRepository {
 
-    override suspend fun createUser(userModel: UserModel) = withContext(ioDispatcher){
+    override suspend fun createUser(userModel: UserModel) = withContext(ioDispatcher) {
         userDao.createUser(mapper.reverseMap(userModel))
     }
 
-    override suspend fun getUser(password: String): UserModel = withContext(ioDispatcher){
-        return@withContext try{
-            mapper.map(userDao.getUser(password))
+    override suspend fun signIn(password: String): Unit = withContext(ioDispatcher) {
+        try {
+            userDao.getUser(password).toString()
         } catch (e: NullPointerException) {
-            throw UserNotFoundException("User not found")
+            throw UserNotFoundException("Неправильный пароль")
         }
     }
 
-    override suspend fun isRegistered(): Boolean = withContext(ioDispatcher){
+    override suspend fun isRegistered(): Boolean = withContext(ioDispatcher) {
         return@withContext userDao.isRegistered() != null
     }
 

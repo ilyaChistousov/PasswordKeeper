@@ -6,7 +6,7 @@ interface UserRepository {
 
     suspend fun createUser(userModel: UserModel)
 
-    suspend fun getUser(password: String): UserModel
+    suspend fun signIn(password: String)
 
     suspend fun isRegistered(): Boolean
 

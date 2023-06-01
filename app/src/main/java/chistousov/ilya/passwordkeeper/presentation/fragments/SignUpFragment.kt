@@ -1,9 +1,7 @@
 package chistousov.ilya.passwordkeeper.presentation.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle

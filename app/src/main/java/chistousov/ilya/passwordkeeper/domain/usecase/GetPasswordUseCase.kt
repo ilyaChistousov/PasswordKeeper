@@ -1,6 +1,5 @@
 package chistousov.ilya.passwordkeeper.domain.usecase
 
-import chistousov.ilya.passwordkeeper.R
 import chistousov.ilya.passwordkeeper.domain.Result
 import chistousov.ilya.passwordkeeper.domain.model.PasswordModel
 import chistousov.ilya.passwordkeeper.domain.repository.PasswordRepository

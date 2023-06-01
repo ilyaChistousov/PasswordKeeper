@@ -1,7 +1,6 @@
 package chistousov.ilya.passwordkeeper.data.repository
 
 import chistousov.ilya.passwordkeeper.data.dao.PasswordDao
-import chistousov.ilya.passwordkeeper.data.mapper.DefaultPasswordMapper
 import chistousov.ilya.passwordkeeper.data.mapper.PasswordMapper
 import chistousov.ilya.passwordkeeper.domain.model.PasswordModel
 import chistousov.ilya.passwordkeeper.domain.repository.PasswordRepository

@@ -1,7 +1,6 @@
 package chistousov.ilya.passwordkeeper.presentation.utils
 
 import chistousov.ilya.passwordkeeper.R
-import java.util.concurrent.locks.Condition
 
 class Validator {
 

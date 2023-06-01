@@ -1,7 +1,6 @@
 package chistousov.ilya.passwordkeeper.presentation
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -14,7 +13,6 @@ import chistousov.ilya.passwordkeeper.R
 import chistousov.ilya.passwordkeeper.databinding.ActivityMainBinding
 import chistousov.ilya.passwordkeeper.presentation.utils.UiState
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint

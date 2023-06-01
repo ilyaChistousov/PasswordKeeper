@@ -6,7 +6,6 @@ import chistousov.ilya.passwordkeeper.data.dao.PasswordDao
 import chistousov.ilya.passwordkeeper.data.dao.UserDao
 import chistousov.ilya.passwordkeeper.data.entity.PasswordDbEntity
 import chistousov.ilya.passwordkeeper.data.entity.UserDbEntity
-import javax.inject.Singleton
 
 @Database(entities = [PasswordDbEntity::class, UserDbEntity::class], version = 1)
 abstract class PasswordDb : RoomDatabase() {
