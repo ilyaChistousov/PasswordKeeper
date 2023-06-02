@@ -31,7 +31,7 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
     private fun signIn() {
         binding.signInButton.setOnClickListener {
             viewModel.signIn(binding.passwordText.text.toString()) {
-                navigateToTabsFragment()
+                navigateToListFragment()
             }
         }
     }
@@ -46,7 +46,7 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
         }
     }
 
-    private fun navigateToTabsFragment() {
-        findNavController().navigate(R.id.action_signInFragment_to_tabsFragment)
+    private fun navigateToListFragment() {
+        findNavController().navigate(R.id.action_signInFragment_to_passwordListFragment)
     }
 }
