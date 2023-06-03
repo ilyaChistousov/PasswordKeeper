@@ -6,11 +6,11 @@ import chistousov.ilya.passwordkeeper.domain.model.PasswordModel
 import chistousov.ilya.passwordkeeper.domain.usecase.DeletePasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.GetListPasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.SearchPasswordUseCase
-import chistousov.ilya.passwordkeeper.presentation.utils.UiState
-import chistousov.ilya.passwordkeeper.presentation.utils.mapToUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,8 +21,9 @@ class PasswordListViewModel @Inject constructor(
     private val searchPasswordUseCase: SearchPasswordUseCase,
 ) : ViewModel() {
 
-    private val _passwordList = MutableStateFlow<UiState<List<PasswordModel>>>(UiState.Loading())
-    val passwordList : StateFlow<UiState<List<PasswordModel>>> = _passwordList
+    private val _passwordListState = MutableStateFlow(State())
+    val passwordListState: StateFlow<State> = _passwordListState.asStateFlow()
+
     init {
         viewModelScope.launch {
             getAllValues()
@@ -30,10 +31,15 @@ class PasswordListViewModel @Inject constructor(
     }
 
     fun searchPassword(query: String) = viewModelScope.launch {
-        _passwordList.value = UiState.Loading()
+        _passwordListState.update { it.copy(isLoaded = false) }
         if (query.isNotEmpty()) {
-            searchPasswordUseCase(query).collect {
-                _passwordList.value = it.mapToUiState()
+            searchPasswordUseCase(query).collect { result ->
+                _passwordListState.update {
+                    it.copy(
+                        passwordList = result.unwrap(),
+                        isLoaded = true
+                    )
+                }
             }
         } else {
             getAllValues()
@@ -41,12 +47,17 @@ class PasswordListViewModel @Inject constructor(
     }
 
     private suspend fun getAllValues() {
-        getListPasswordUseCase().collect {
-            _passwordList.value = it.mapToUiState()
+        getListPasswordUseCase().collect { result ->
+            _passwordListState.update { it.copy(passwordList = result.unwrap(), isLoaded = true) }
         }
     }
 
     fun deletePassword(id: Int) = viewModelScope.launch {
         deletePasswordUseCase(id)
     }
+
+    data class State(
+        val passwordList: List<PasswordModel> = emptyList(),
+        val isLoaded: Boolean = false
+    )
 }

@@ -6,19 +6,15 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import chistousov.ilya.passwordkeeper.R
 import chistousov.ilya.passwordkeeper.databinding.FragmentPasswordListBinding
 import chistousov.ilya.passwordkeeper.presentation.adapter.PasswordAdapter
-import chistousov.ilya.passwordkeeper.presentation.utils.UiState
+import chistousov.ilya.passwordkeeper.presentation.utils.launchWhenStarted
 import chistousov.ilya.passwordkeeper.presentation.viewmodel.PasswordListViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PasswordListFragment : Fragment(R.layout.fragment_password_list) {
@@ -58,24 +54,13 @@ class PasswordListFragment : Fragment(R.layout.fragment_password_list) {
     }
 
     private fun getPasswordList() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.passwordList.collect {
-                    when (it) {
-                        is UiState.Loading -> {
-                            setupVisibility(binding.loadingBar)
-                        }
-                        is UiState.Success -> {
-                            setupVisibility(binding.passwordsRecycler)
-                            adapter.submitList(it.value)
-                            binding.passwordsRecycler.adapter = adapter
-                        }
-                        is UiState.Error -> {
-                            setupVisibility(binding.errorMessage)
-                            binding.errorMessage.text = it.message
-                        }
-                    }
-                }
+        viewModel.passwordListState.launchWhenStarted(viewLifecycleOwner) {
+            if (it.isLoaded) {
+                setupVisibility(binding.passwordsRecycler)
+                adapter.submitList(it.passwordList)
+                binding.passwordsRecycler.adapter = adapter
+            } else {
+                setupVisibility(binding.loadingBar)
             }
         }
     }

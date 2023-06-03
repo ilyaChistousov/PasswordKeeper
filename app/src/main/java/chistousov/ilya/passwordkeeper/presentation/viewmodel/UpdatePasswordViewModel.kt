@@ -7,12 +7,11 @@ import chistousov.ilya.passwordkeeper.domain.model.PasswordModel
 import chistousov.ilya.passwordkeeper.domain.usecase.DeletePasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.GetPasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.UpdatePasswordUseCase
-import chistousov.ilya.passwordkeeper.presentation.utils.UiState
-import chistousov.ilya.passwordkeeper.presentation.utils.mapToUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,14 +22,19 @@ class UpdatePasswordViewModel @Inject constructor(
     private val deletePasswordUseCase: DeletePasswordUseCase
 ) : ViewModel() {
 
-    private val _validatingFields = MutableStateFlow<Map<String, Int?>>(emptyMap())
-    val validatingFields = _validatingFields.asStateFlow()
+    private val _updatePasswordState = MutableStateFlow(State())
+    val updatePasswordState: StateFlow<State> = _updatePasswordState
 
-    private val _selectedPassword = MutableStateFlow<UiState<PasswordModel>>(UiState.Loading())
-    val selectedPassword: StateFlow<UiState<PasswordModel>> = _selectedPassword
+    private val _validatingFields = MutableStateFlow(emptyMap<String, Int?>())
+    val validatingFields: StateFlow<Map<String, Int?>> = _validatingFields.asStateFlow()
 
     fun getPassword(id: Int) = viewModelScope.launch {
-        _selectedPassword.value = getPasswordUseCase(id).mapToUiState()
+        _updatePasswordState.update {
+            it.copy(
+                selectedPassword = getPasswordUseCase(id).unwrap(),
+                isLoaded = true
+            )
+        }
     }
 
     fun updatePassword(
@@ -58,4 +62,9 @@ class UpdatePasswordViewModel @Inject constructor(
             onSuccess()
         }
     }
+
+    data class State(
+        val selectedPassword: PasswordModel? = null,
+        val isLoaded: Boolean = false
+    )
 }
