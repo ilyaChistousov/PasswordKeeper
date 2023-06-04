@@ -1,6 +1,5 @@
 package chistousov.ilya.passwordkeeper.domain.usecase
 
-import chistousov.ilya.passwordkeeper.R
 import chistousov.ilya.passwordkeeper.domain.Result
 import chistousov.ilya.passwordkeeper.domain.model.PasswordModel
 import chistousov.ilya.passwordkeeper.domain.repository.PasswordRepository
@@ -16,7 +15,7 @@ class SearchPasswordUseCase @Inject constructor(private val repository: Password
                 emit(Result.Success(it))
             }
         } catch (e: Exception) {
-            emit(Result.Error(R.string.password_error))
+            emit(Result.Error("Ошибка загрузки данных"))
         }
     }
 }

@@ -2,6 +2,7 @@ package chistousov.ilya.passwordkeeper.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import chistousov.ilya.passwordkeeper.domain.exception.ValidationException
 import chistousov.ilya.passwordkeeper.domain.model.PasswordModel
 import chistousov.ilya.passwordkeeper.domain.usecase.CreatePasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.DeletePasswordUseCase
@@ -9,7 +10,6 @@ import chistousov.ilya.passwordkeeper.domain.usecase.GenerateUniquePasswordUseCa
 import chistousov.ilya.passwordkeeper.domain.usecase.GetPasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.UpdatePasswordUseCase
 import chistousov.ilya.passwordkeeper.presentation.utils.UiState
-import chistousov.ilya.passwordkeeper.presentation.utils.Validator
 import chistousov.ilya.passwordkeeper.presentation.utils.mapToUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,8 +38,6 @@ class PasswordDetailsViewModel @Inject constructor(
     private val _generatedPassword = MutableStateFlow("")
     val generatedPassword: StateFlow<String> = _generatedPassword
 
-    private val validator = Validator()
-
     fun getPassword(id: Int) = viewModelScope.launch {
         _selectedPassword.value = getPasswordUseCase(id).mapToUiState()
     }
@@ -52,18 +50,12 @@ class PasswordDetailsViewModel @Inject constructor(
         url: String,
         onSuccess: () -> Unit
     ) {
-        validatePasswordAndTitle(password, title)
-        if (_passwordValidation.value.entries.all { it.value == null }) {
-            val newPassword = PasswordModel(
-                title = title.trim(),
-                password = password.trim(),
-                login = login.trim(),
-                email = email.trim(),
-                url = url.trim()
-            )
-            viewModelScope.launch {
-                createPasswordUseCase(newPassword)
+        viewModelScope.launch {
+            try {
+                createPasswordUseCase(title, password, login, email, url)
                 onSuccess()
+            } catch (e: ValidationException) {
+                _passwordValidation.value = e.validationMap
             }
         }
     }
@@ -77,19 +69,12 @@ class PasswordDetailsViewModel @Inject constructor(
         url: String,
         onSuccess: () -> Unit
     ) {
-        validatePasswordAndTitle(password, title)
-        if (_passwordValidation.value.entries.all { it.value == null }) {
-            val updatedPassword = PasswordModel(
-                id,
-                title.trim(),
-                password.trim(),
-                login.trim(),
-                email.trim(),
-                url.trim()
-            )
-            viewModelScope.launch {
-                updatePasswordUseCase(updatedPassword)
+        viewModelScope.launch {
+            try {
+                updatePasswordUseCase(id, title, password, login, email, url)
                 onSuccess()
+            } catch (e: ValidationException) {
+                _passwordValidation.value = e.validationMap
             }
         }
     }
@@ -109,14 +94,5 @@ class PasswordDetailsViewModel @Inject constructor(
     ) {
         _generatedPassword.value =
             generateUniquePasswordUseCase(length, withDigits, withUppercase, withSpecial)
-    }
-
-    private fun validatePasswordAndTitle(password: String, title: String) {
-        val validatedPassword = validator.validate(password)
-        val validatedTitle = validator.validate(title)
-        val map = mutableMapOf<String, Int?>()
-        map[Validator.PASSWORD_KEY] = validatedPassword
-        map[Validator.TITLE_KEY] = validatedTitle
-        _passwordValidation.value = map
     }
 }

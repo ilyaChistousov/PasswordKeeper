@@ -3,6 +3,7 @@ package chistousov.ilya.passwordkeeper.di
 import android.content.Context
 import androidx.room.Room
 import chistousov.ilya.passwordkeeper.data.dao.PasswordDao
+import chistousov.ilya.passwordkeeper.data.dao.UserDao
 import chistousov.ilya.passwordkeeper.data.db.PasswordDb
 import dagger.Module
 import dagger.Provides
@@ -17,7 +18,7 @@ class DataBaseModule {
 
     @Singleton
     @Provides
-    fun provideDataBase(@ApplicationContext context: Context) : PasswordDb {
+    fun provideDataBase(@ApplicationContext context: Context): PasswordDb {
         return Room.databaseBuilder(
             context, PasswordDb::class.java, "password_db"
         ).build()
@@ -25,9 +26,13 @@ class DataBaseModule {
 
     @Singleton
     @Provides
-    fun providePasswordDao(passwordDb: PasswordDb) : PasswordDao {
+    fun providePasswordDao(passwordDb: PasswordDb): PasswordDao {
         return passwordDb.getPasswordDao()
     }
 
-
+    @Singleton
+    @Provides
+    fun provideUserDao(passwordDb: PasswordDb): UserDao {
+        return passwordDb.getUserDao()
+    }
 }

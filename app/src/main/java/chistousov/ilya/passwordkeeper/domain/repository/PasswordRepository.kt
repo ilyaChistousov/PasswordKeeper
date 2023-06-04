@@ -1,7 +1,6 @@
 package chistousov.ilya.passwordkeeper.domain.repository
 
 import chistousov.ilya.passwordkeeper.domain.model.PasswordModel
-import chistousov.ilya.passwordkeeper.presentation.utils.UiState
 import kotlinx.coroutines.flow.Flow
 
 interface PasswordRepository {

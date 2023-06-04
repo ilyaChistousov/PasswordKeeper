@@ -68,7 +68,7 @@ class PasswordDetailsFragment : Fragment(R.layout.fragment_password_details) {
 
                             is UiState.Error -> {
                                 setupVisibility(binding.errorText)
-                                binding.errorText.text = getString(it.resId)
+                                binding.errorText.text = it.message
                             }
                         }
                     }
@@ -199,5 +199,4 @@ class PasswordDetailsFragment : Fragment(R.layout.fragment_password_details) {
     private fun navigateToPasswordList() {
         findNavController().popBackStack()
     }
-
 }

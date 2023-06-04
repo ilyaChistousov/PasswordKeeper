@@ -65,7 +65,7 @@ class PasswordListFragment : Fragment(R.layout.fragment_password_list) {
                         }
                         is UiState.Error -> {
                             setupVisibility(binding.errorMessage)
-                            binding.errorMessage.setText(it.resId)
+                            binding.errorMessage.text = it.message
                         }
                     }
                 }

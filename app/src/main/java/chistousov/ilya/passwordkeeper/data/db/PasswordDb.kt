@@ -3,11 +3,13 @@ package chistousov.ilya.passwordkeeper.data.db
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import chistousov.ilya.passwordkeeper.data.dao.PasswordDao
+import chistousov.ilya.passwordkeeper.data.dao.UserDao
 import chistousov.ilya.passwordkeeper.data.entity.PasswordDbEntity
-import javax.inject.Singleton
+import chistousov.ilya.passwordkeeper.data.entity.UserDbEntity
 
-@Database(entities = [PasswordDbEntity::class], version = 1)
+@Database(entities = [PasswordDbEntity::class, UserDbEntity::class], version = 1)
 abstract class PasswordDb : RoomDatabase() {
 
     abstract fun getPasswordDao(): PasswordDao
+    abstract fun getUserDao(): UserDao
 }
