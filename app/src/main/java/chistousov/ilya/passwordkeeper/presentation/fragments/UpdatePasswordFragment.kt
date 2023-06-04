@@ -5,19 +5,17 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import chistousov.ilya.passwordkeeper.R
 import chistousov.ilya.passwordkeeper.databinding.FragmentUpdatePasswordBinding
 import chistousov.ilya.passwordkeeper.domain.model.PasswordModel
-import chistousov.ilya.passwordkeeper.presentation.fragments.GeneratePasswordFragment.*
-import chistousov.ilya.passwordkeeper.presentation.utils.UiState
+import chistousov.ilya.passwordkeeper.presentation.fragments.GeneratePasswordFragment.DataListener
 import chistousov.ilya.passwordkeeper.presentation.utils.Validator
 import chistousov.ilya.passwordkeeper.presentation.utils.getStringNullable
+import chistousov.ilya.passwordkeeper.presentation.utils.launchWhenStarted
 import chistousov.ilya.passwordkeeper.presentation.viewmodel.UpdatePasswordViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class UpdatePasswordFragment : Fragment(R.layout.fragment_update_password), DataListener {
@@ -25,35 +23,28 @@ class UpdatePasswordFragment : Fragment(R.layout.fragment_update_password), Data
     private lateinit var binding: FragmentUpdatePasswordBinding
     private val viewModel: UpdatePasswordViewModel by viewModels()
     private val args: UpdatePasswordFragmentArgs by navArgs()
-    private var generatePasswordFragment: GeneratePasswordFragment? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentUpdatePasswordBinding.bind(view)
 
-        getPassword()
         updatePassword()
-        deletePassword()
+        getPassword()
         generatePassword()
+        deletePassword()
     }
 
     private fun getPassword() {
-        lifecycleScope.launch {
-            viewModel.getPassword(args.passwordId)
-            viewModel.selectedPassword.collect {
-                when (it) {
-                    is UiState.Loading -> {
-                        setupVisibility(binding.progressBar)
-                    }
-                    is UiState.Success -> {
-                        setupVisibility(binding.rootContainer)
-                        initFormFields(it.value)
-                    }
-                    is UiState.Error -> {
-                        setupVisibility(binding.errorText)
-                        binding.errorText.text = it.message
-                    }
+        viewModel.getPassword(args.passwordId)
+
+        viewModel.updatePasswordState.launchWhenStarted(viewLifecycleOwner) {
+            if (it.isLoaded) {
+                setupVisibility(binding.rootContainer)
+                it.selectedPassword?.let {
+                    initFormFields(it)
                 }
+            } else {
+                setupVisibility(binding.progressBar)
             }
         }
     }
@@ -79,6 +70,7 @@ class UpdatePasswordFragment : Fragment(R.layout.fragment_update_password), Data
             val login = binding.passwordDetails.loginEditText.text.toString()
             val email = binding.passwordDetails.emailEditText.text.toString()
             val url = binding.passwordDetails.urlEditText.text.toString()
+
             validateFields()
             viewModel.updatePassword(args.passwordId, title, password, login, email, url) {
                 findNavController().popBackStack()
@@ -97,11 +89,9 @@ class UpdatePasswordFragment : Fragment(R.layout.fragment_update_password), Data
     private fun validateFields() {
         val validatingFields = initValidatingFields()
 
-        lifecycleScope.launch {
-            viewModel.validatingFields.collect {
-                it.forEach {
-                    validatingFields[it.key]?.helperText = getStringNullable(it.value)
-                }
+        viewModel.validatingFields.launchWhenStarted(viewLifecycleOwner) {
+            it.forEach {
+                validatingFields[it.key]?.helperText = getStringNullable(it.value)
             }
         }
     }
@@ -112,6 +102,7 @@ class UpdatePasswordFragment : Fragment(R.layout.fragment_update_password), Data
     )
 
     private fun generatePassword() {
+        var generatePasswordFragment: GeneratePasswordFragment? = null
         binding.passwordDetails.generatePasswordButton.setOnClickListener {
             if (generatePasswordFragment == null) {
                 generatePasswordFragment = GeneratePasswordFragment.newInstance()

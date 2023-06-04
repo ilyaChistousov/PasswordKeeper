@@ -4,15 +4,14 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import chistousov.ilya.passwordkeeper.R
 import chistousov.ilya.passwordkeeper.databinding.FragmentCreatePasswordBinding
 import chistousov.ilya.passwordkeeper.presentation.utils.Validator
 import chistousov.ilya.passwordkeeper.presentation.utils.getStringNullable
+import chistousov.ilya.passwordkeeper.presentation.utils.launchWhenStarted
 import chistousov.ilya.passwordkeeper.presentation.viewmodel.CreatePasswordViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CreatePasswordFragment : Fragment(R.layout.fragment_create_password),
@@ -32,11 +31,9 @@ class CreatePasswordFragment : Fragment(R.layout.fragment_create_password),
     private fun validateFields() {
         val validatingFields = initValidatingFields()
 
-        lifecycleScope.launch {
-            viewModel.validatingFields.collect {
-                it.forEach {
-                    validatingFields[it.key]?.helperText = getStringNullable(it.value)
-                }
+        viewModel.createPasswordState.launchWhenStarted(viewLifecycleOwner) {
+            it.validatingFields.forEach {
+                validatingFields[it.key]?.helperText = getStringNullable(it.value)
             }
         }
     }

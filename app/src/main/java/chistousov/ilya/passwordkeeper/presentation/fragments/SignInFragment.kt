@@ -40,7 +40,7 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.errorMessage.collect {
-                    binding.passwordContainer.helperText = it
+                    binding.passwordContainer.helperText = it.errorMessage
                 }
             }
         }

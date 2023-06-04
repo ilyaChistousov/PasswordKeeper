@@ -13,15 +13,17 @@ class GeneratePasswordViewModel @Inject constructor(
     private val generateUniquePasswordUseCase: GenerateUniquePasswordUseCase
 ) : ViewModel() {
 
-    private val _generatedPassword = MutableStateFlow("")
-    val generatedPassword: StateFlow<String> = _generatedPassword.asStateFlow()
+    private val _generatedPassword = MutableStateFlow(State())
+    val generatedPassword: StateFlow<State> = _generatedPassword.asStateFlow()
 
     init {
-        _generatedPassword.value = generateUniquePasswordUseCase(
-            5,
-            withDigits = true,
-            withUppercase = true,
-            withSpecial = true
+        _generatedPassword.value = State(
+            generateUniquePasswordUseCase(
+                5,
+                withDigits = true,
+                withUppercase = true,
+                withSpecial = true
+            )
         )
     }
 
@@ -31,11 +33,17 @@ class GeneratePasswordViewModel @Inject constructor(
         withUpperCase: Boolean,
         withSpecialChar: Boolean
     ) {
-        _generatedPassword.value = generateUniquePasswordUseCase(
-            length,
-            withDigit,
-            withUpperCase,
-            withSpecialChar
+        _generatedPassword.value = State(
+            generateUniquePasswordUseCase(
+                length,
+                withDigit,
+                withUpperCase,
+                withSpecialChar
+            )
         )
     }
+
+    data class State(
+        val generatedPassword: String = ""
+    )
 }

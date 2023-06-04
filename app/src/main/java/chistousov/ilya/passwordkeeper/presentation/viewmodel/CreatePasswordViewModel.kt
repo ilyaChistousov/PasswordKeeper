@@ -16,8 +16,8 @@ class CreatePasswordViewModel @Inject constructor(
     private val createPasswordUseCase: CreatePasswordUseCase
 ) : ViewModel() {
 
-    private val _validatingFields = MutableStateFlow<Map<String, Int?>>(emptyMap())
-    val validatingFields: StateFlow<Map<String, Int?>> = _validatingFields.asStateFlow()
+    private val _createPasswordState = MutableStateFlow(State())
+    val createPasswordState: StateFlow<State> = _createPasswordState.asStateFlow()
 
     fun createPassword(
         title: String,
@@ -31,7 +31,11 @@ class CreatePasswordViewModel @Inject constructor(
             createPasswordUseCase(title, password, login, email, url)
             onSuccess()
         } catch (e: ValidationException) {
-            _validatingFields.value = e.validationMap
+            _createPasswordState.value = State(e.validationMap)
         }
     }
+
+    data class State(
+        val validatingFields : Map<String, Int?> = emptyMap()
+    )
 }

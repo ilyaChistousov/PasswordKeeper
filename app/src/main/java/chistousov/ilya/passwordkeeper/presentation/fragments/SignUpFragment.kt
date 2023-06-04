@@ -5,18 +5,14 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import chistousov.ilya.passwordkeeper.R
 import chistousov.ilya.passwordkeeper.databinding.FragmentSignUpBinding
-import chistousov.ilya.passwordkeeper.presentation.utils.UiState
 import chistousov.ilya.passwordkeeper.presentation.utils.Validator
 import chistousov.ilya.passwordkeeper.presentation.utils.getStringNullable
+import chistousov.ilya.passwordkeeper.presentation.utils.launchWhenStarted
 import chistousov.ilya.passwordkeeper.presentation.viewmodel.SignUpViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
@@ -28,27 +24,20 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSignUpBinding.bind(view)
 
-        checkRegistration()
-        validatePassword()
+        collectSignUpState()
         signUp()
     }
 
-    private fun checkRegistration() {
+    private fun collectSignUpState() {
         viewModel.checkRegistration()
-        lifecycleScope.launch {
-            viewModel.isSignedUp.collect {
-                when (it) {
-                    is UiState.Loading -> {
-                        setupVisibility(binding.progressBar)
-                    }
-                    is UiState.Success -> {
-                        if (it.value) {
-                            navigateToSignInFragment()
-                        }
-                        setupVisibility(binding.contentContainer)
-                    }
-                    else -> throw IllegalStateException("Unexpected value: $it")
-                }
+
+        viewModel.signUpState.launchWhenStarted(viewLifecycleOwner) {
+            if (it.isLoaded) {
+                setupVisibility(binding.contentContainer)
+                validatePassword(it.validationMap)
+                if (it.isSignedUp) navigateToSignInFragment()
+            } else {
+                setupVisibility(binding.progressBar)
             }
         }
     }
@@ -59,17 +48,11 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
         }
     }
 
-    private fun validatePassword() {
+    private fun validatePassword(validationMap: Map<String, Int?>) {
         val validateFields = initValidationContainerFields()
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.passwordValidation.collect {
-                    it.forEach {
-                        validateFields[it.key]?.helperText = getStringNullable(it.value)
-                    }
-                }
-            }
+        validationMap.forEach {
+            validateFields[it.key]?.helperText = getStringNullable(it.value)
         }
     }
 
