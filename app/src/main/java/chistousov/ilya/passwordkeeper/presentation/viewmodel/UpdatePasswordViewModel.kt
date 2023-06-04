@@ -4,9 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import chistousov.ilya.passwordkeeper.domain.exception.ValidationException
 import chistousov.ilya.passwordkeeper.domain.model.PasswordModel
-import chistousov.ilya.passwordkeeper.domain.usecase.CreatePasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.DeletePasswordUseCase
-import chistousov.ilya.passwordkeeper.domain.usecase.GenerateUniquePasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.GetPasswordUseCase
 import chistousov.ilya.passwordkeeper.domain.usecase.UpdatePasswordUseCase
 import chistousov.ilya.passwordkeeper.presentation.utils.UiState
@@ -19,45 +17,20 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PasswordDetailsViewModel @Inject constructor(
-    private val createPasswordUseCase: CreatePasswordUseCase,
+class UpdatePasswordViewModel @Inject constructor(
     private val getPasswordUseCase: GetPasswordUseCase,
     private val updatePasswordUseCase: UpdatePasswordUseCase,
-    private val deletePasswordUseCase: DeletePasswordUseCase,
-    private val generateUniquePasswordUseCase: GenerateUniquePasswordUseCase
+    private val deletePasswordUseCase: DeletePasswordUseCase
 ) : ViewModel() {
 
-    private val _passwordValidation =
-        MutableStateFlow<Map<String, Int?>>(mutableMapOf())
-    val passwordValidation: StateFlow<Map<String, Int?>> =
-        _passwordValidation.asStateFlow()
+    private val _validatingFields = MutableStateFlow<Map<String, Int?>>(emptyMap())
+    val validatingFields = _validatingFields.asStateFlow()
 
     private val _selectedPassword = MutableStateFlow<UiState<PasswordModel>>(UiState.Loading())
     val selectedPassword: StateFlow<UiState<PasswordModel>> = _selectedPassword
 
-    private val _generatedPassword = MutableStateFlow("")
-    val generatedPassword: StateFlow<String> = _generatedPassword
-
     fun getPassword(id: Int) = viewModelScope.launch {
         _selectedPassword.value = getPasswordUseCase(id).mapToUiState()
-    }
-
-    fun createPassword(
-        title: String,
-        password: String,
-        login: String,
-        email: String,
-        url: String,
-        onSuccess: () -> Unit
-    ) {
-        viewModelScope.launch {
-            try {
-                createPasswordUseCase(title, password, login, email, url)
-                onSuccess()
-            } catch (e: ValidationException) {
-                _passwordValidation.value = e.validationMap
-            }
-        }
     }
 
     fun updatePassword(
@@ -74,7 +47,7 @@ class PasswordDetailsViewModel @Inject constructor(
                 updatePasswordUseCase(id, title, password, login, email, url)
                 onSuccess()
             } catch (e: ValidationException) {
-                _passwordValidation.value = e.validationMap
+                _validatingFields.value = e.validationMap
             }
         }
     }
@@ -84,15 +57,5 @@ class PasswordDetailsViewModel @Inject constructor(
             deletePasswordUseCase(id)
             onSuccess()
         }
-    }
-
-    fun generatePassword(
-        length: Int,
-        withDigits: Boolean,
-        withUppercase: Boolean,
-        withSpecial: Boolean
-    ) {
-        _generatedPassword.value =
-            generateUniquePasswordUseCase(length, withDigits, withUppercase, withSpecial)
     }
 }

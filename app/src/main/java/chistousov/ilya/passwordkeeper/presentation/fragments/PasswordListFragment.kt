@@ -36,6 +36,7 @@ class PasswordListFragment : Fragment(R.layout.fragment_password_list) {
         getPasswordList()
         search()
         setupSwipeListener()
+        navigateToCreatePassword()
     }
 
     private fun search() {
@@ -46,8 +47,14 @@ class PasswordListFragment : Fragment(R.layout.fragment_password_list) {
 
     private fun navigateToUpdatePassword(passwordId: Int) {
         val directions = PasswordListFragmentDirections
-            .actionPasswordListToAddPassword(passwordId, ScreenMode.UPDATE)
+            .actionPasswordListFragmentToUpdatePasswordFragment(passwordId)
         findNavController().navigate(directions)
+    }
+
+    private fun navigateToCreatePassword() {
+        binding.createPasswordButton.setOnClickListener {
+            findNavController().navigate(R.id.action_passwordListFragment_to_createPasswordFragment)
+        }
     }
 
     private fun getPasswordList() {
