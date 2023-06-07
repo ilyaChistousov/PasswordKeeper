@@ -6,45 +6,28 @@
     app:startDestination="@id/signUpFragment">
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="chistousov.ilya.passwordkeeper.presentation.fragments.SignUpFragment"
-        android:label="fragment_sign_up"
-        tools:layout="@layout/fragment_sign_up" >
-        <action
-            android:id="@+id/action_signUpFragment_to_signInFragment"
-            app:destination="@id/signInFragment" />
-    </fragment>
+        android:name="chistousov.ilya.sign_up.presentation.SignUpFragment"
+        android:label="SignUpFragment"
+        tools:layout="@layout/fragment_sign_up"/>
     <fragment
         android:id="@+id/signInFragment"
-        android:name="chistousov.ilya.passwordkeeper.presentation.fragments.SignInFragment"
-        android:label="fragment_sign_in"
-        tools:layout="@layout/fragment_sign_in" >
-        <action
-            android:id="@+id/action_signInFragment_to_passwordListFragment"
-            app:destination="@id/passwordListFragment" />
-    </fragment>
+        android:name="chistousov.ilya.sign_in.presentation.SignInFragment"
+        android:label="SignInFragment"
+        tools:layout="@layout/fragment_sign_in"/>
     <fragment
         android:id="@+id/passwordListFragment"
-        android:name="chistousov.ilya.passwordkeeper.presentation.fragments.PasswordListFragment"
-        android:label="fragment_password_list"
-        tools:layout="@layout/fragment_password_list" >
-        <action
-            android:id="@+id/action_passwordListFragment_to_createPasswordFragment"
-            app:destination="@id/createPasswordFragment" />
-        <action
-            android:id="@+id/action_passwordListFragment_to_updatePasswordFragment"
-            app:destination="@id/updatePasswordFragment" />
-    </fragment>
+        android:name="chistousov.ilya.password_details.presentation.passwords.PasswordListFragment"
+        android:label="PasswordListFragment"
+        tools:layout="@layout/fragment_password_list"/>
     <fragment
         android:id="@+id/createPasswordFragment"
-        android:name="chistousov.ilya.passwordkeeper.presentation.fragments.CreatePasswordFragment"
-        android:label="fragment_create_password"
-        tools:layout="@layout/fragment_create_password" />
+        android:name="chistousov.ilya.password_details.presentation.create.CreatePasswordFragment"
+        android:label="CreatePasswordFragment"
+        tools:layout="@layout/fragment_create_password"/>
     <fragment
         android:id="@+id/updatePasswordFragment"
-        android:name="chistousov.ilya.passwordkeeper.presentation.fragments.UpdatePasswordFragment"
-        android:label="UpdatePasswordFragment" >
-        <argument
-            android:name="passwordId"
-            app:argType="integer" />
-    </fragment>
+        android:name="chistousov.ilya.password_details.presentation.update.UpdatePasswordFragment"
+        android:label="UpdatePasswordFragment"
+        tools:layout="@layout/fragment_update_password"/>
+
 </navigation>

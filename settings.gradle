@@ -14,3 +14,11 @@ dependencyResolutionManagement {
 }
 rootProject.name = "PasswordKeeper"
 include ':app'
+include ':core:common'
+include ':features:signin'
+include ':features:signup'
+include ':features:password'
+include ':core:theme'
+include ':core:presentation'
+include ':navigation'
+include ':data'
