@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title">Название</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+    <string name="email">Почта</string>
+    <string name="url">URL</string>
+    <string name="save">Сохранить</string>
+    <string name="delete">Удалить</string>
+    <string name="search">Поиск</string>
+    <string name="password_copied">Пароль скопирован</string>
+    <string name="empty_field">Поле не должно быть пустым</string>
+</resources>

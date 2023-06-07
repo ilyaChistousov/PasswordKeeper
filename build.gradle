@@ -1,17 +1,41 @@
 buildscript {
-    ext.coroutines_version = "1.6.4"
-    ext.core_ktx_version = "1.10.1"
-    ext.app_compat_version = "1.6.1"
-    ext.material_version = "1.9.0"
-    ext.constraint_version = "2.1.4"
-    ext.junit_version = "4.13.2"
-    ext.junit_ext_version = "1.1.5"
-    ext.espresso_core = "3.5.1"
-    ext.hilt_version = "2.44"
-    ext.room_version = "2.5.1"
-    ext.lifecycle_version = "2.6.1"
-    ext.fragment_ktx_version = "1.5.7"
-    ext.nav_version = "2.5.3"
+    ext {
+        targetAndroidSdk = 33
+        minAndroidSdk = 24
+
+        hilt_version = "2.44"
+        nav_version = "2.5.3"
+        room_version = "2.5.1"
+
+        Libs = [
+                Android: [
+                        CoreKtx: "androidx.core:core-ktx:1.10.1",
+                        FragmentKtx: "androidx.fragment:fragment-ktx:1.5.7",
+                        AppCompat: "androidx.appcompat:appcompat:1.6.1",
+                        NavigationFragment: "androidx.navigation:navigation-fragment-ktx:2.5.3",
+                        NavigationUi: "androidx.navigation:navigation-ui-ktx:2.5.3",
+                        LifecycleViewModelKtx: "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1",
+                        ConstraintLayout: "androidx.constraintlayout:constraintlayout:2.1.4",
+                        RoomKtx: "androidx.room:room-ktx:$room_version",
+                        RoomRuntime: "androidx.room:room-runtime:$room_version",
+                        RoomCompiler: "androidx.room:room-compiler:$room_version",
+
+                ],
+                JetBrans: [
+                        Coroutines: "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4",
+                ],
+                Google: [
+                        Material: "com.google.android.material:material:1.6.1",
+                        Hilt: "com.google.dagger:hilt-android:$hilt_version",
+                        HiltCompiler: "com.google.dagger:hilt-compiler:$hilt_version",
+                ],
+                Test: [
+                        Junit: "junit:junit:4.13.2",
+                        EspressoCore: "androidx.test.espresso:espresso-core:3.5.1",
+                        JunitExt: "androidx.test.ext:junit:1.1.5",
+                ]
+        ]
+    }
 
     dependencies {
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
@@ -22,4 +46,5 @@ plugins {
     id 'com.android.library' version '8.0.1' apply false
     id 'org.jetbrains.kotlin.android' version '1.8.20' apply false
     id 'com.google.dagger.hilt.android' version "$hilt_version" apply false
+    id 'org.jetbrains.kotlin.jvm' version '1.8.20' apply false
 }
