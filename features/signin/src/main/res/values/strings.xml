@@ -2,4 +2,5 @@
 <resources>
     <string name="password">Пароль</string>
     <string name="sign_in">Войти</string>
+    <string name="wrong_password">Неправильный пароль</string>
 </resources>

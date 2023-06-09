@@ -1,10 +1,11 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
 
 android {
-    namespace 'chistousov.ilya.presentation'
+    namespace 'chistousov.ilya.wiring'
     compileSdk targetAndroidSdk
 
     defaultConfig {
@@ -32,8 +33,9 @@ android {
 
 dependencies {
 
-    implementation Libs.Android.FragmentKtx
-    implementation Libs.Android.LifecycleViewModelKtx
+    implementation Libs.Google.Hilt
+    kapt Libs.Google.HiltCompiler
 
     implementation project(":core:common")
+    implementation project(":core:common-impl")
 }

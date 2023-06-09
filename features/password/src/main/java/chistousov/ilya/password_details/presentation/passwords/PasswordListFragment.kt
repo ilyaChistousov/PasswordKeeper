@@ -48,7 +48,7 @@ class PasswordListFragment : Fragment(R.layout.fragment_password_list) {
     }
 
     private fun getPasswordList() {
-        viewModel.passwordListState.launchWhenStarted(viewLifecycleOwner) {
+        viewModel.passwordListState.observe(viewLifecycleOwner) {
             if (it.isLoaded) {
                 setupVisibility(binding.passwordsRecycler)
                 adapter.submitList(it.passwordModelList)

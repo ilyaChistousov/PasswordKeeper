@@ -32,7 +32,7 @@ class UpdatePasswordFragment : Fragment(R.layout.fragment_update_password), Data
     private fun getPassword() {
 //        viewModel.getPassword(args.passwordId)
 
-        viewModel.updatePasswordState.launchWhenStarted(viewLifecycleOwner) {
+        viewModel.updatePasswordState.observe(viewLifecycleOwner) {
             if (it.isLoaded) {
                 setupVisibility(binding.rootContainer)
                 it.selectedPasswordModel?.let {
