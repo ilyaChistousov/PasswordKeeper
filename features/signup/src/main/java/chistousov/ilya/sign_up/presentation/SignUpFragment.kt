@@ -27,7 +27,7 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
     private fun collectSignUpState() {
         viewModel.checkRegistration()
 
-        viewModel.signUpState.launchWhenStarted(viewLifecycleOwner) {
+        viewModel.signUpState.observe(viewLifecycleOwner) {
             if (it.isLoaded) {
                 setupVisibility(binding.contentContainer)
                 binding.passwordConfirmText.setText(it.confirmPasswordError)

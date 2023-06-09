@@ -48,9 +48,11 @@ dependencies {
     kapt Libs.Google.HiltCompiler
 
     implementation project(":core:common")
+    implementation project(":core:common-impl")
     implementation project(":features:signin")
     implementation project(":features:signup")
     implementation project(":features:password")
     implementation project(":data")
     implementation project(":navigation")
+    implementation project(":wiring")
 }

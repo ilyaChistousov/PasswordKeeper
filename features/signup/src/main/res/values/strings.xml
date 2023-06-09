@@ -3,4 +3,8 @@
     <string name="password">Пароль</string>
     <string name="repeat_password">Повторите пароль</string>
     <string name="sign_up">Регистрация</string>
+    <string name="not_same_field">Пароли должны быть одинаковыми</string>
+    <string name="min_count_field">Пароль должен сожержать больше 5 символов</string>
+    <string name="max_count_value">Пароль не должен содержать больше 16 символов</string>
+    <string name="required_field">Поле обязательно для заполнения</string>
 </resources>

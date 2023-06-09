@@ -9,10 +9,13 @@ import chistousov.ilya.password_details.domain.usecases.DeletePasswordUseCase
 import chistousov.ilya.password_details.domain.usecases.GetPasswordUseCase
 import chistousov.ilya.password_details.domain.usecases.UpdatePasswordUseCase
 import chistousov.ilya.password_details.presentation.PasswordRouter
+import chistousov.ilya.presentation.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,21 +26,20 @@ class UpdatePasswordViewModel @Inject constructor(
     private val updatePasswordUseCase: UpdatePasswordUseCase,
     private val deletePasswordUseCase: DeletePasswordUseCase,
     private val router: PasswordRouter
-) : ViewModel() {
+) : BaseViewModel() {
 
-    private val _updatePasswordState = MutableStateFlow(State())
-    val updatePasswordState: StateFlow<State> = _updatePasswordState
+    private val selectedPasswordModel = MutableStateFlow<PasswordModel?>(null)
+    private val isLoaded = MutableStateFlow(false)
 
-    private val _validatingFields = MutableStateFlow(emptyMap<String, Int?>())
-    val validatingFields: StateFlow<Map<String, Int?>> = _validatingFields.asStateFlow()
+    val updatePasswordState = combine(
+        selectedPasswordModel,
+        isLoaded,
+        ::merge
+    ).toFlowValue(State())
 
     fun getPassword(id: Int) = viewModelScope.launch {
-        _updatePasswordState.update {
-            it.copy(
-                selectedPasswordModel = getPasswordUseCase(id).unwrap(),
-                isLoaded = true
-            )
-        }
+        selectedPasswordModel.value = getPasswordUseCase(id).unwrap()
+        isLoaded.value = true
     }
 
     fun updatePassword(
@@ -62,6 +64,13 @@ class UpdatePasswordViewModel @Inject constructor(
             deletePasswordUseCase(id)
             onSuccess()
         }
+    }
+
+    fun merge(
+        passwordModel: PasswordModel?,
+        isLoaded: Boolean
+    ): State {
+        return State(passwordModel, isLoaded)
     }
 
     data class State(

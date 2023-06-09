@@ -33,12 +33,8 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
     }
 
     private fun validateText() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.errorMessage.collect {
-                    binding.passwordContainer.helperText = it.errorMessage
-                }
-            }
+        viewModel.errorMessage.observe(viewLifecycleOwner) {
+            binding.passwordContainer.helperText = it.errorMessage
         }
     }
 }

@@ -27,7 +27,7 @@ class CreatePasswordFragment : Fragment(R.layout.fragment_create_password),
     }
 
     private fun validateFields() {
-        viewModel.createPasswordState.launchWhenStarted(viewLifecycleOwner) {
+        viewModel.createPasswordState.observe(viewLifecycleOwner) {
             binding.passwordDetails.passwordContainer.helperText = it.passwordError
             binding.passwordDetails.titleContainer.helperText = it.titleError
         }

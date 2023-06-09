@@ -58,10 +58,8 @@ class GeneratePasswordFragment : Fragment(R.layout.fragment_password_generator) 
     }
 
     private fun observeGeneratedPassword() {
-        lifecycleScope.launch {
-            viewModel.generatedPassword.collect {
-                dataListener?.onDataReceived(it.generatedPassword)
-            }
+        viewModel.generatedPassword.observe(viewLifecycleOwner) {
+            dataListener?.onDataReceived(it.generatedPassword)
         }
     }
 
