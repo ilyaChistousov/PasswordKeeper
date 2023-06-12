@@ -5,25 +5,23 @@ import android.view.View
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import chistousov.ilya.password_details.R
 import chistousov.ilya.password_details.databinding.FragmentPasswordGeneratorBinding
 import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class GeneratePasswordFragment : Fragment(R.layout.fragment_password_generator) {
 
     private lateinit var binding: FragmentPasswordGeneratorBinding
     private val viewModel: GeneratePasswordViewModel by viewModels()
-    private var dataListener: DataListener? = null
+    private var generatedPasswordListener: GeneratedPasswordListener? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentPasswordGeneratorBinding.bind(view)
         observeGeneratedPassword()
-        dataListener = (parentFragment as DataListener)
+        generatedPasswordListener = (parentFragment as GeneratedPasswordListener)
 
         generatePassword()
         initGeneratorPasswordListeners()
@@ -59,11 +57,11 @@ class GeneratePasswordFragment : Fragment(R.layout.fragment_password_generator) 
 
     private fun observeGeneratedPassword() {
         viewModel.generatedPassword.observe(viewLifecycleOwner) {
-            dataListener?.onDataReceived(it.generatedPassword)
+            generatedPasswordListener?.onDataReceived(it.generatedPassword)
         }
     }
 
-    interface DataListener {
+    interface GeneratedPasswordListener {
         fun onDataReceived(password: String)
     }
 

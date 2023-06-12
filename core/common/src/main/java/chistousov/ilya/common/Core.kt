@@ -12,6 +12,8 @@ object Core {
 
     val resource: Resource get() = coreProvider.resource
 
+    val commonUi: CommonUi get() = coreProvider.commonUi
+
     fun init(coreProvider: CoreProvider) {
         this.coreProvider = coreProvider
     }

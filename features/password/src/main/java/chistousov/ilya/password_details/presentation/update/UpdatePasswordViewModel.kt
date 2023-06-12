@@ -1,27 +1,24 @@
 package chistousov.ilya.password_details.presentation.update
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import chistousov.ilya.password_details.R
+import chistousov.ilya.password_details.domain.entity.PasswordField
 import chistousov.ilya.password_details.domain.entity.PasswordModel
-import chistousov.ilya.password_details.domain.exceptions.EmptyPasswordException
-import chistousov.ilya.password_details.domain.exceptions.EmptyTitleException
+import chistousov.ilya.password_details.domain.exceptions.EmptyFieldException
 import chistousov.ilya.password_details.domain.usecases.DeletePasswordUseCase
 import chistousov.ilya.password_details.domain.usecases.GetPasswordUseCase
 import chistousov.ilya.password_details.domain.usecases.UpdatePasswordUseCase
 import chistousov.ilya.password_details.presentation.PasswordRouter
 import chistousov.ilya.presentation.BaseViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class UpdatePasswordViewModel @Inject constructor(
+class UpdatePasswordViewModel @AssistedInject constructor(
+    @Assisted private val screen: UpdatePasswordFragment.Screen,
     private val getPasswordUseCase: GetPasswordUseCase,
     private val updatePasswordUseCase: UpdatePasswordUseCase,
     private val deletePasswordUseCase: DeletePasswordUseCase,
@@ -31,19 +28,25 @@ class UpdatePasswordViewModel @Inject constructor(
     private val selectedPasswordModel = MutableStateFlow<PasswordModel?>(null)
     private val isLoaded = MutableStateFlow(false)
 
+    val focusFieldEventFlow = flowEvent<PasswordField>()
+    val fieldErrorMessageEventFlow = flowEvent<Pair<PasswordField, String>>()
+
     val updatePasswordState = combine(
         selectedPasswordModel,
         isLoaded,
-        ::merge
+        ::State
     ).toFlowValue(State())
 
-    fun getPassword(id: Int) = viewModelScope.launch {
-        selectedPasswordModel.value = getPasswordUseCase(id).unwrap()
+    init {
+        getPassword()
+    }
+
+    private fun getPassword() = viewModelScope.launch {
+        selectedPasswordModel.value = getPasswordUseCase(screen.id).unwrap()
         isLoaded.value = true
     }
 
     fun updatePassword(
-        id: Int,
         title: String,
         password: String,
         login: String,
@@ -52,29 +55,43 @@ class UpdatePasswordViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
-                updatePasswordUseCase(id, title, password, login, email, url)
+                updatePasswordUseCase(screen.id, title, password, login, email, url)
                 router.goBack()
-            } catch (e: EmptyTitleException) { }
-            catch (e: EmptyPasswordException) { }
+            } catch (e: EmptyFieldException) {
+                handleEmptyFieldException(e)
+            }
         }
     }
 
-    fun deletePassword(id: Int, onSuccess: () -> Unit) {
-        viewModelScope.launch {
-            deletePasswordUseCase(id)
-            onSuccess()
-        }
+    private fun handleEmptyFieldException(e: EmptyFieldException) {
+        focusField(e.field)
+        setFieldError(e.field, resource.getString(R.string.empty_field))
     }
 
-    fun merge(
-        passwordModel: PasswordModel?,
-        isLoaded: Boolean
-    ): State {
-        return State(passwordModel, isLoaded)
+    private fun focusField(field: PasswordField) {
+        focusFieldEventFlow.publish(field)
+    }
+
+    private fun setFieldError(field: PasswordField, errorMessage: String) {
+        fieldErrorMessageEventFlow.publish(field to errorMessage)
+    }
+
+    fun deletePassword() {
+        showDeleteDialog {
+            viewModelScope.launch {
+                deletePasswordUseCase(screen.id)
+                router.goBack()
+            }
+        }
     }
 
     data class State(
         val selectedPasswordModel: PasswordModel? = null,
         val isLoaded: Boolean = false
     )
+
+    @AssistedFactory
+    interface Factory {
+        fun create(screen: UpdatePasswordFragment.Screen): UpdatePasswordViewModel
+    }
 }
