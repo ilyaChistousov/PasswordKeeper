@@ -1,12 +1,8 @@
 package chistousov.ilya.password_details.presentation.generate_password
 
-import androidx.lifecycle.ViewModel
 import chistousov.ilya.password_details.domain.usecases.GeneratePasswordUseCase
 import chistousov.ilya.presentation.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel

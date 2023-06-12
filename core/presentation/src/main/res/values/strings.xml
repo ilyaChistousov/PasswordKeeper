@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dialog_delete_title">Удаление пароля</string>
+    <string name="dialog_delete_message">Вы действительно хотите удалить пароль?</string>
+    <string name="dialog_delete_positive_button">Удалить</string>
+    <string name="dialog_delete_negative_button">Отмена</string>
+</resources>

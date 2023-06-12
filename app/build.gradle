@@ -49,6 +49,7 @@ dependencies {
 
     implementation project(":core:common")
     implementation project(":core:common-impl")
+    implementation project(":core:presentation")
     implementation project(":features:signin")
     implementation project(":features:signup")
     implementation project(":features:password")

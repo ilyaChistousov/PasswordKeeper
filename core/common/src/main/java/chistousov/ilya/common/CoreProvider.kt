@@ -5,4 +5,6 @@ interface CoreProvider {
     val logger: Logger
 
     val resource: Resource
+
+    val commonUi: CommonUi
 }

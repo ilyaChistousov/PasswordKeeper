@@ -43,4 +43,7 @@ dependencies {
 
     implementation Libs.Google.Hilt
     kapt Libs.Google.HiltCompiler
+
+    implementation project(":core:presentation")
+    implementation project(":core:common-impl")
 }

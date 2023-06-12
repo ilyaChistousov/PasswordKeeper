@@ -1,5 +1,7 @@
 package chistousov.ilya.password_details.presentation.passwords
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
@@ -7,12 +9,10 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
 import chistousov.ilya.password_details.R
 import chistousov.ilya.password_details.databinding.FragmentPasswordListBinding
+import chistousov.ilya.password_details.domain.entity.PasswordModel
 import chistousov.ilya.password_details.presentation.passwords.adapter.PasswordAdapter
-import chistousov.ilya.presentation.launchWhenStarted
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,9 +20,21 @@ class PasswordListFragment : Fragment(R.layout.fragment_password_list) {
 
     private val viewModel: PasswordListViewModel by viewModels()
     private lateinit var binding: FragmentPasswordListBinding
-    private val adapter = PasswordAdapter {
-        viewModel.launchUpdatePassword(it)
-    }
+    private val adapter = PasswordAdapter(
+        object : PasswordAdapter.ClickListener {
+            override fun onPasswordItemClick(password: PasswordModel) {
+                viewModel.launchUpdatePassword(password.id)
+            }
+
+            override fun onPasswordDeleteClick(password: PasswordModel) {
+                viewModel.deletePassword(password.id)
+            }
+
+            override fun onPasswordCopyClick(password: PasswordModel) {
+                copyPassword(password)
+            }
+        }
+    )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -30,7 +42,6 @@ class PasswordListFragment : Fragment(R.layout.fragment_password_list) {
 
         getPasswordList()
         search()
-        setupSwipeListener()
         navigateToCreatePassword()
         onBackPressed()
     }
@@ -65,33 +76,21 @@ class PasswordListFragment : Fragment(R.layout.fragment_password_list) {
         }
     }
 
-    private fun setupSwipeListener() {
-        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
-            0,
-            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-        ) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                return false
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val swipedItem = adapter.currentList[viewHolder.adapterPosition]
-                viewModel.deletePassword(swipedItem.id)
-            }
-        }).attachToRecyclerView(binding.passwordsRecycler)
+    private fun copyPassword(password: PasswordModel) {
+        val clipboardManager =
+            binding.root.context.getSystemService(ClipboardManager::class.java)
+        val clipData = ClipData.newPlainText("label", password.password)
+        clipboardManager.setPrimaryClip(clipData)
+        viewModel.showCopiedToast(getString(R.string.password_copied))
     }
 
     private fun onBackPressed() {
         requireActivity()
             .onBackPressedDispatcher
             .addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                requireActivity().moveTaskToBack(true)
-            }
-        })
+                override fun handleOnBackPressed() {
+                    requireActivity().moveTaskToBack(true)
+                }
+            })
     }
 }
