@@ -9,8 +9,9 @@ import javax.inject.Inject
 
 class PasswordDataRepository @Inject constructor(
     private val passwordDao: PasswordDao,
-    private val ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher,
 ) {
+
     suspend fun getPassword(passwordId: Int): PasswordDataEntity = withContext(ioDispatcher) {
         return@withContext passwordDao.getPassword(passwordId)
     }

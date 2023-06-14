@@ -11,7 +11,7 @@ class GetPasswordUseCase @Inject constructor(private val repository: PasswordRep
         return try {
             Result.Success(repository.getPassword(passwordId))
         } catch (e: Exception) {
-            Result.Error("Ошибка загрузки данных")
+            Result.Error(e, "Error")
         }
     }
 }

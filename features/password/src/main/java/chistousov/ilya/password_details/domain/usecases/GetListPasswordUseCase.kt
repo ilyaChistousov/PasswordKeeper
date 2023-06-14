@@ -15,7 +15,7 @@ class GetListPasswordUseCase @Inject constructor (private val repository: Passwo
                 emit(Result.Success(it))
             }
         } catch (e: Exception) {
-            emit(Result.Error("Ошибка загрузки данных"))
+            emit(Result.Error(e, "Error"))
         }
     }
 }
