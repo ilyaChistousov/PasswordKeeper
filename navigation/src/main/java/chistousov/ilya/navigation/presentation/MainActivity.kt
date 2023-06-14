@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity() {
             it.onCreate(this)
         }
         navComponentRouter.setNavGraph()
-
     }
 
     override fun onStart() {

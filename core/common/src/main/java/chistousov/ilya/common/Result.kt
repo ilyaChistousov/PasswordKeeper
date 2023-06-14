@@ -12,9 +12,9 @@ sealed class Result<out T> {
         }
     }
 
-    data class Error (val message: String): Result<Nothing>() {
+    data class Error (val exception: Exception, val msg: String? = null): Result<Nothing>() {
         override fun unwrap(): Nothing {
-            throw Exception(message)
+            throw exception
         }
 
         override fun <R> map(mapper: (Nothing) -> R): Result<R> {

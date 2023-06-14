@@ -12,6 +12,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import net.sqlcipher.database.SQLiteDatabase
+import net.sqlcipher.database.SupportFactory
 import javax.inject.Singleton
 
 @Module
@@ -21,9 +23,13 @@ class DataModule {
     @Singleton
     @Provides
     fun provideDataBase(@ApplicationContext context: Context): PasswordDb {
+        val passphrase = SQLiteDatabase.getBytes("dbPass".toCharArray())
+        val supportFactory = SupportFactory(passphrase)
         return Room.databaseBuilder(
             context, PasswordDb::class.java, "password_db"
-        ).build()
+        )
+            .openHelperFactory(supportFactory)
+            .build()
     }
 
     @Singleton

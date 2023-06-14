@@ -39,5 +39,7 @@ dependencies {
     implementation Libs.Android.RoomKtx
     kapt Libs.Android.RoomCompiler
 
+    implementation Libs.Other.SQLCipher
+
     implementation project(":core:common")
 }

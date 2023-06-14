@@ -14,7 +14,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.multibindings.ElementsIntoSet
-import dagger.multibindings.IntoSet
 
 @Module
 @InstallIn(SingletonComponent::class)
