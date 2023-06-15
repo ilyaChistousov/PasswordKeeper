@@ -18,9 +18,6 @@ class NavComponentRouter @Inject constructor(
 
     private var activity: FragmentActivity? = null
 
-    var currentDestination = 0
-        private set
-
     override fun onCreate(activity: FragmentActivity) {
         this.activity = activity
     }
@@ -29,6 +26,7 @@ class NavComponentRouter @Inject constructor(
         val graph = getNavController().navInflater.inflate(
             destinationProvider.provideNavigationGraphId()
         )
+        graph.setStartDestination(destinationProvider.provideStartDestination())
         getNavController().graph = graph
     }
 
@@ -42,10 +40,8 @@ class NavComponentRouter @Inject constructor(
         if (args == null) {
             getNavController().navigate(destinationId)
         } else {
-            val args = bundleOf(SCREEN_ARGS to args)
-            getNavController().navigate(destinationId, args)
+            getNavController().navigate(destinationId, bundleOf(SCREEN_ARGS to args))
         }
-        currentDestination = destinationId
     }
 
     fun pop() {

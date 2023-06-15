@@ -10,6 +10,6 @@ class AdapterSignUpRouter @Inject constructor(
 ) : SignUpRouter {
 
     override fun launchSignIn() {
-        navComponentRouter.launch(R.id.signInFragment)
+        navComponentRouter.pop()
     }
 }

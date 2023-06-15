@@ -12,7 +12,7 @@ interface DestinationProvider {
     fun provideNavigationGraphId(): Int
 
     @IdRes
-    fun provideSignInDestination(): Int
+    fun provideSignUpDestination(): Int
 
     @IdRes
     fun providePasswordListDestination(): Int

@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import chistousov.ilya.common.UserNotFoundException
 import chistousov.ilya.presentation.BaseViewModel
 import chistousov.ilya.sign_in.R
+import chistousov.ilya.sign_in.domain.usecase.IsSignedUpUseCase
 import chistousov.ilya.sign_in.domain.usecase.SignInUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -12,10 +13,23 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase,
+    private val isSignedUpUseCase: IsSignedUpUseCase,
     private val router: SignInRouter
 ) : BaseViewModel() {
 
     val errorMessage = flowValue(State())
+
+    init {
+        checkRegistration()
+    }
+
+    private fun checkRegistration() {
+        viewModelScope.launch {
+            if (!isSignedUpUseCase()) {
+                router.launchSignUp()
+            }
+        }
+    }
 
     fun signIn(password: String) = viewModelScope.launch {
         try {

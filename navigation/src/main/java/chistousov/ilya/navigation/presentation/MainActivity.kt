@@ -30,19 +30,4 @@ class MainActivity : AppCompatActivity() {
         }
         navComponentRouter.setNavGraph()
     }
-
-    override fun onStart() {
-        Log.d("MainActivity", "onStart")
-        super.onStart()
-    }
-
-    override fun onStop() {
-        Log.d("MainActivity", "onStop")
-        super.onStop()
-    }
-
-    override fun onDestroy() {
-        Log.d("MainActivity", "onDestroy")
-        super.onDestroy()
-    }
 }

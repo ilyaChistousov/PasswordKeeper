@@ -8,39 +8,21 @@ import chistousov.ilya.sign_up.domain.exceptions.EmptyFieldException
 import chistousov.ilya.sign_up.domain.exceptions.MaxFieldLengthException
 import chistousov.ilya.sign_up.domain.exceptions.MinFieldLengthException
 import chistousov.ilya.sign_up.domain.exceptions.NotSameFieldsException
-import chistousov.ilya.sign_up.domain.usecases.IsSignedUpUseCase
 import chistousov.ilya.sign_up.domain.usecases.SignUpUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     private val signUpUseCase: SignUpUseCase,
-    private val isSignedUpUseCase: IsSignedUpUseCase,
     private val router: SignUpRouter
 ) : BaseViewModel() {
-
-    private val isLoadedFlow = MutableStateFlow(false)
-    private val fieldErrorMessageFlow = MutableStateFlow<Pair<SignUpField, String>?>(null)
 
     val focusFieldFlowEvent = flowEvent<SignUpField>()
     val clearFieldFlowEvent = flowEvent<SignUpField>()
 
-    val signUpState = combine(
-        isLoadedFlow,
-        fieldErrorMessageFlow,
-        ::State
-    ).toFlowValue(State())
-
-    fun checkRegistration() = viewModelScope.launch {
-        if (isSignedUpUseCase()) {
-            router.launchSignIn()
-        }
-        isLoadedFlow.value = true
-    }
+    val signUpState = flowValue(State())
 
     fun signUp(password: String, confirmPassword: String) {
         viewModelScope.launch {
@@ -89,11 +71,10 @@ class SignUpViewModel @Inject constructor(
     }
 
     private fun setFieldError(field: SignUpField, errorMessage: String) {
-        fieldErrorMessageFlow.value = field to errorMessage
+        signUpState.value = State(field to errorMessage)
     }
 
     data class State(
-        val isLoaded: Boolean = false,
         val fieldErrorMessage: Pair<SignUpField, String>? = null
     )
 }

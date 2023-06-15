@@ -40,26 +40,12 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
     }
 
     private fun observeSignUpState() {
-        viewModel.checkRegistration()
-
         viewModel.signUpState.observe(viewLifecycleOwner) { state ->
-            if (state.isLoaded) {
-                setupVisibility(binding.contentContainer)
-
-                cleanUpErrors()
-                if (state.fieldErrorMessage != null) {
-                    val textInput = getTextInputByField(state.fieldErrorMessage.first)
-                    textInput.helperText = state.fieldErrorMessage.second
-                }
-            } else {
-                setupVisibility(binding.progressBar)
+            cleanUpErrors()
+            if (state.fieldErrorMessage != null) {
+                val textInput = getTextInputByField(state.fieldErrorMessage.first)
+                textInput.helperText = state.fieldErrorMessage.second
             }
-        }
-    }
-
-    private fun setupVisibility(visibleView: View) {
-        listOf(binding.progressBar, binding.contentContainer).forEach {
-            it.isVisible = it == visibleView
         }
     }
 
