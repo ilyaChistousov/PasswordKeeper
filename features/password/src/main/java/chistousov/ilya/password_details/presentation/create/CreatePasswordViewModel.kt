@@ -8,7 +8,6 @@ import chistousov.ilya.password_details.domain.usecases.CreatePasswordUseCase
 import chistousov.ilya.password_details.presentation.PasswordRouter
 import chistousov.ilya.presentation.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

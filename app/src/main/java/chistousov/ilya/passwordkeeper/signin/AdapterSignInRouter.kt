@@ -12,4 +12,8 @@ class AdapterSignInRouter @Inject constructor(
     override fun launchPasswordList() {
         navComponentRouter.launch(R.id.passwordListFragment)
     }
+
+    override fun launchSignUp() {
+        navComponentRouter.launch(R.id.signUpFragment)
+    }
 }

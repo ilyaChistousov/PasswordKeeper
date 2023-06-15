@@ -11,4 +11,8 @@ class AdapterSignInRepository @Inject constructor(
     override suspend fun signIn(password: String) {
         accountDataRepository.signIn(password)
     }
+
+    override suspend fun isSignedUp(): Boolean {
+        return accountDataRepository.isSignedUp()
+    }
 }

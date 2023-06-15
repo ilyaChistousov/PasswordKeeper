@@ -7,16 +7,17 @@ import javax.inject.Inject
 class DefaultDestinationProvider @Inject constructor() : DestinationProvider {
 
     override fun provideStartDestination(): Int {
-        return R.id.signUpFragment
+        return R.id.signInFragment
     }
 
     override fun provideNavigationGraphId(): Int {
         return R.navigation.nav_graph
     }
 
-    override fun provideSignInDestination(): Int {
-        return R.id.signInFragment
+    override fun provideSignUpDestination(): Int {
+        return R.id.signUpFragment
     }
+
 
     override fun providePasswordListDestination(): Int {
         return R.id.passwordListFragment
